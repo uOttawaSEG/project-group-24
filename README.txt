@@ -1,10 +1,8 @@
 Members:
 
-Bradley-Hans Desmornes, 300363947
 Mathew Al-Fenn, 300356097
+Bradley-Hans Desmornes, 300363947
 Sijun Liu, 300363454
-Chaitanyasinh Jadav. 300375039
-Youssuf Helaly. 300355994
-...
-...
+Chaitanyasinh Jadav, 300375039
+Youssuf Helaly, 300355994
 ...
