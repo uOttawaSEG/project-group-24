@@ -31,11 +31,5 @@ public class Organizer extends PersonAbstract {
 
     }
 
-    public static void main(String args[]){
-        Organizer sijun;
-        sijun = new Organizer("Sijun", "Liu", "2049616299@qq.com", "LSJlsj123", "6137902388", "435 albert st", "Nothing");
-        System.out.println(sijun);
-    }
-
     
 }
