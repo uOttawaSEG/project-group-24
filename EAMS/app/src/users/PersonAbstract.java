@@ -5,7 +5,8 @@
  * 
  * @author Sijun Liu
  */
- import java.util.regex.*;
+ import java.util.regex.Pattern;
+ import java.util.regex.Matcher;
  public abstract class PersonAbstract {
     
     /**
