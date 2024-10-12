@@ -1,24 +1,33 @@
 package com.example.eams;
+
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 public class Registerpage extends AppCompatActivity {
-    private EditText firstname, lastname, email, password, phone, address;
+    private EditText firstname, lastname, email, password, phone, address,confirmpass;
+    private ToggleButton role;
+    private String roleName;
     private Button create;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_registerpage);
 
         initializeViews();
         setClickListeners();
+        role.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                roleName = "Organizer";
+            } else {
+                roleName = "Attendee";
+            }
+        });
     }
 
     private void initializeViews() {
@@ -28,37 +37,32 @@ public class Registerpage extends AppCompatActivity {
         password = findViewById(R.id.password);
         phone = findViewById(R.id.phone_number);
         address = findViewById(R.id.address);
-
+        confirmpass=findViewById(R.id.confirmpassword);
+        role =findViewById(R.id.role1);
+        create = findViewById(R.id.submitButton);
     }
 
     private void setClickListeners() {
         create.setOnClickListener(v -> createUser());
-
-
     }
 
     private void createUser() {
+        System.out.println(role);
+        String firstName = firstname.getText().toString().trim();
+        String lastName = lastname.getText().toString().trim();
+        String emailInput = email.getText().toString().trim();
+        String passwordInput = password.getText().toString().trim();
+        String confirmPassInput = confirmpass.getText().toString().trim();
+        String phoneInput = phone.getText().toString().trim();
+        String addressInput = address.getText().toString().trim();
 
-        //add to database
-    }
-    private void validateEmail() {
-        EditText editTextEmail = findViewById(R.id.email); // Ensure you have the correct ID
-        String email = editTextEmail.getText().toString().trim();
-
-        // Check if the email contains '@' and has something before and after it
-        if (email.contains("@")) {
-            String[] parts = email.split("@");
-            if (parts.length == 2 && !parts[0].isEmpty() && !parts[1].isEmpty()) {
-                // Valid email
-                Toast.makeText(this, "Email is valid", Toast.LENGTH_SHORT).show();
-            } else {
-                // Invalid email (empty part before or after @)
-                Toast.makeText(this, "Invalid email. Please check the format.", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            // Invalid email (does not contain @)
-            Toast.makeText(this, "Invalid email. Please include '@'", Toast.LENGTH_SHORT).show();
+        if (firstName.isEmpty() || lastName.isEmpty() || emailInput.isEmpty() ||
+                passwordInput.isEmpty() || phoneInput.isEmpty() || addressInput.isEmpty() ||
+                confirmPassInput.isEmpty() || roleName==null)
+        {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
         }
+        Toast.makeText(this, "User created!", Toast.LENGTH_SHORT).show();
     }
-
 }

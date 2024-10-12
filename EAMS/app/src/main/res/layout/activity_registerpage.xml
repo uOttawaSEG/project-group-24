@@ -96,6 +96,14 @@
             android:padding="10dp"
             android:textSize="18sp" />
 
+        <ToggleButton
+            android:id="@+id/role1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textOff="Attendee"
+            android:textOn="Organizer"
+            android:text="ToggleButton" />
+
         <Button
             android:id="@+id/submitButton"
             android:layout_width="wrap_content"
