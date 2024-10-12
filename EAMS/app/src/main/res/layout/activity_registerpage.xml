@@ -40,9 +40,29 @@
             android:id="@+id/last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="last_name"
+            android:hint="last name"
             android:inputType="textPersonName"
             android:minHeight="48dp"
+            android:padding="10dp"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="phone number"
+            android:inputType="phone"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="address"
+            android:inputType="textMultiLine"
+            android:minLines="3"
             android:padding="10dp"
             android:textSize="18sp" />
 
@@ -67,22 +87,12 @@
             android:textSize="18sp" />
 
         <EditText
-            android:id="@+id/phone_number"
+            android:id="@+id/confirmpassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="phone_number"
-            android:inputType="phone"
+            android:hint="confirm password"
+            android:inputType="textPassword"
             android:minHeight="48dp"
-            android:padding="10dp"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/address"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:hint="address"
-            android:inputType="textMultiLine"
-            android:minLines="3"
             android:padding="10dp"
             android:textSize="18sp" />
 

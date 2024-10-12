@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private void LoginUser() {
         String entryusername = username.getText().toString().trim();
         String entrypassword = password.getText().toString().trim();
+
+
         if(username.getText().toString().equals("a") && password.getText().toString().equals("b")){
             Intent intent = new Intent(MainActivity.this, ActivityWelcome.class);
             startActivity(intent);
