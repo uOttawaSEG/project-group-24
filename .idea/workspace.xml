@@ -28,8 +28,11 @@
   <component name="ChangeListManager">
     <list default="true" id="8bb76b44-547e-4c65-adc4-88f764018981" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/ActivityWelcome.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/ActivityWelcome.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/DatabaseHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/DatabaseHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/Registerpage.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/Registerpage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_welcome.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_welcome.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -389,16 +392,5 @@
     <MESSAGE value="1" />
     <MESSAGE value="working login page" />
     <option name="LAST_COMMIT_MESSAGE" value="" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/DatabaseHelper.java</url>
-          <line>52</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

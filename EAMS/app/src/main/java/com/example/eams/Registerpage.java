@@ -19,6 +19,7 @@ public class Registerpage extends AppCompatActivity {
     private Button create;
     private DatabaseHelper databaseHelper;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +59,7 @@ public class Registerpage extends AppCompatActivity {
     }
 
     private void createUser() {
-        System.out.println("this ois the role" + roleName);
+
 
         String firstName = firstname.getText().toString().trim();
         String lastName = lastname.getText().toString().trim();

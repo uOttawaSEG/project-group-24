@@ -1,5 +1,6 @@
 package com.example.eams;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -15,6 +16,8 @@ public class ActivityWelcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
+
         setContentView(R.layout.activity_welcome);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -26,7 +29,9 @@ public class ActivityWelcome extends AppCompatActivity {
     }
 
     private void initWelcomeMessage(){
+        Intent intent = getIntent();
+        String role = intent.getStringExtra("roleName");
         TextView welcomeTextView = findViewById(R.id.welcomeTextView);
-        welcomeTextView.setText("Welcome! You are logged in as " + "Attendees");
+        welcomeTextView.setText("Welcome! You are logged in as " + role);
     }
 }

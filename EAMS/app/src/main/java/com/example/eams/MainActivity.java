@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText username, password;
     private Button register, login;
     public DatabaseHelper databaseHelper;
+    private final String adminname ="admin";
+    private final String adminpassword ="123";
 
 
 
@@ -48,21 +50,37 @@ public class MainActivity extends AppCompatActivity {
         String inputEmail = username.getText().toString().trim();
         String inputPassword = password.getText().toString().trim();
 
+        // Hardcoded admin credentials
+        if (inputEmail.equals(adminname) && inputPassword.equals(adminpassword)) {
+            // Admin login, redirect to welcome screen with admin role
+            Intent welcomeIntent = new Intent(MainActivity.this, ActivityWelcome.class);
+            welcomeIntent.putExtra("roleName", "Administrator");
+            startActivity(welcomeIntent);
+            return;
+        }
+
         // Ensure the email and password fields are not empty
         if (inputEmail.isEmpty() || inputPassword.isEmpty()) {
             Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Proceed to check if the email and password are valid
+        // Check if the email and password are valid for regular users
         if (databaseHelper.isValidUser(inputEmail)) {
-            Intent intent = new Intent(MainActivity.this, ActivityWelcome.class);
-            startActivity(intent);
+            // Get the user's role from the database
+            String userRole = databaseHelper.getUserRole(inputEmail);
+
+            // If the user role is found, proceed to the welcome screen with the user's role
+            if (userRole != null) {
+                Intent welcomeIntent = new Intent(MainActivity.this, ActivityWelcome.class);
+                welcomeIntent.putExtra("roleName", userRole);  // Pass the user's role to the next activity
+                startActivity(welcomeIntent);
+            } else {
+                Toast.makeText(this, "Failed to retrieve user role", Toast.LENGTH_SHORT).show();
+            }
         } else {
             Toast.makeText(this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     private void RegisterUser() {
