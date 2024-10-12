@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText username, password;
     private Button register, login;
+    public DatabaseHelper databaseHelper;
 
 
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         initializeViews();
         setClickListeners();
+        databaseHelper = new DatabaseHelper(this); // Properly initialize the global variable
     }
     private void initializeViews() {
         username = findViewById(R.id.username);
@@ -43,18 +45,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void LoginUser() {
-        String entryusername = username.getText().toString().trim();
-        String entrypassword = password.getText().toString().trim();
+        String inputEmail = username.getText().toString().trim();
+        String inputPassword = password.getText().toString().trim();
 
+        // Ensure the email and password fields are not empty
+        if (inputEmail.isEmpty() || inputPassword.isEmpty()) {
+            Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        if(username.getText().toString().equals("a") && password.getText().toString().equals("b")){
+        // Proceed to check if the email and password are valid
+        if (databaseHelper.isValidUser(inputEmail)) {
             Intent intent = new Intent(MainActivity.this, ActivityWelcome.class);
             startActivity(intent);
+        } else {
+            Toast.makeText(this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
         }
-        else {
 
-            Toast.makeText(MainActivity.this, "Incorrect username or password", Toast.LENGTH_SHORT).show();
-        }
 
     }
 

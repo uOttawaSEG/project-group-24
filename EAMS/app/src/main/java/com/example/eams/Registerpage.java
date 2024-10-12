@@ -1,5 +1,7 @@
 package com.example.eams;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ public class Registerpage extends AppCompatActivity {
     private ToggleButton role;
     private String roleName;
     private Button create;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,9 @@ public class Registerpage extends AppCompatActivity {
 
         initializeViews();
         setClickListeners();
+
+        // Initialize the database helper here
+        databaseHelper = new DatabaseHelper(this); // Properly initialize the global variable
     }
 
     private void initializeViews() {
@@ -79,7 +85,14 @@ public class Registerpage extends AppCompatActivity {
             Toast.makeText(this, "Please put a valid email", Toast.LENGTH_SHORT).show();
         }
 
-
+        boolean isInserted = databaseHelper.addUser(firstName, lastName, emailInput, passwordInput, phoneInput, addressInput, roleName);
+        if (isInserted) {
+            Toast.makeText(this, "User added succeboolean isInserted = databaseHelper.addUser(firstName, lastName, emailInput, passwordInput, Integer.parseInt(phoneInput), addressInput, roleName);ssfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error adding user", Toast.LENGTH_SHORT).show();
+        }
+        Intent intent = new Intent(Registerpage.this, MainActivity.class);
+        startActivity(intent);
 
     }
 
@@ -97,4 +110,5 @@ public class Registerpage extends AppCompatActivity {
         Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
     }
+
 }
