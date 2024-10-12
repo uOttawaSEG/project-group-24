@@ -79,7 +79,7 @@
         <EditText
             android:id="@+id/address"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:hint="address"
             android:inputType="textMultiLine"
             android:minLines="3"
@@ -95,5 +95,6 @@
             android:onClick="enable"
             android:text="register"
             android:textSize="25sp" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

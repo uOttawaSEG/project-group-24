@@ -15,11 +15,6 @@
           <theme>@style/Theme.EAMS</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_welcome.xml">
-        <config>
-          <theme>@style/Theme.EAMS</theme>
-        </config>
-      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
@@ -27,7 +22,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8bb76b44-547e-4c65-adc4-88f764018981" name="Changes" comment="working login page">
-      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_welcome.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_welcome.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/MainActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +33,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=/Users/brad/.android/avd/Medium_Phone_API_35.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=/Users/mathew/.android/avd/Pixel_4a_API_35.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$/EAMS">
       <ProjectState />
@@ -87,7 +83,6 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile" />
         <option value="Class" />
       </list>
     </option>
@@ -122,11 +117,11 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/uOttawaSEG/project-group-24.git&quot;,
-    &quot;accountId&quot;: &quot;4109e7f8-c02e-4156-ab28-41e014e29971&quot;
+    &quot;accountId&quot;: &quot;fdf12a59-4fe9-4be8-b785-2ecccb5713a3&quot;
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
@@ -150,9 +145,9 @@
     &quot;ToolWindowLayout Validation.ShowToolbar&quot;: &quot;false&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;c&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;YH__MA__classes&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/brad/Documents/uni/year_2/seg_2105/seg_project/project-group-24&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/tom/Pictures/lab4/lab4&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
@@ -161,12 +156,6 @@
 }</component>
   <component name="RecentsManager">
     <key name="android.template.-2078499797">
-      <recent name="com.example.eams" />
-    </key>
-    <key name="android.template.-1320615753">
-      <recent name="com.example.eams" />
-    </key>
-    <key name="android.template.-592187218">
       <recent name="com.example.eams" />
     </key>
     <key name="android.template.-1824831751">
