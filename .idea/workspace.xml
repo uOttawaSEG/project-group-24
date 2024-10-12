@@ -27,11 +27,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8bb76b44-547e-4c65-adc4-88f764018981" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/Registerpage.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/Registerpage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_registerpage.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_registerpage.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EAMS/app/src/users/DataBaseHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/users/DataBaseHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -21,14 +21,13 @@ public class Registerpage extends AppCompatActivity {
 
         initializeViews();
         setClickListeners();
-        role.setOnCheckedChangeListener((buttonView, is Checked)) ->{
-            if (role.isChecked()){
-                roleName="Organizer";
+        role.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                roleName = "Organizer";
+            } else {
+                roleName = "Attendee";
             }
-            else{
-                roleName="Attendee";
-            }
-        }
+        });
     }
 
     private void initializeViews() {
