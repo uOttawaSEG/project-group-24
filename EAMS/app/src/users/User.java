@@ -12,7 +12,7 @@ public abstract class User {
      * Attributes for a user that will created as a person.
      * The email also refers to the email address of the user.
      */
-    private String firstName, lastName, email, password, address;
+    private String firstName, lastName, email, password, address, role;
     private long phoneNum;
 
     /**
@@ -23,7 +23,7 @@ public abstract class User {
      * @throws IllegalArugumentException if either phoneNum or email is not valid
      */
     public User(String firstName, String lastName, String email, String password,
-                long phoneNum, String address){
+                long phoneNum, String address, String role){
         if(!isEmailValid(email) || !isPhoneNumValid(phoneNum)){
             throw new IllegalArgumentException("Invalid phone number or email address");
         }
@@ -33,6 +33,8 @@ public abstract class User {
         this.password = password;
         this.phoneNum = phoneNum;
         this.address = address;
+        this.role = role;
+
     }
 
     /**
