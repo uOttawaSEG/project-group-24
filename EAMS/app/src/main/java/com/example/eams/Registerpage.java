@@ -69,10 +69,13 @@ public class Registerpage extends AppCompatActivity {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
 
         }
-        if(!passwordInput.equals(confirmPassInput)){
+        else if(!isValidPhoneNumber(phoneInput)){
+            Toast.makeText(this, "Please enter a phone number in this format: 0123456789", Toast.LENGTH_SHORT).show();
+        }
+        else if(!passwordInput.equals(confirmPassInput)){
             Toast.makeText(this, "Password do not match", Toast.LENGTH_SHORT).show();
         }
-        if(!isEmailValid(emailInput)){
+        else if(!isEmailValid(emailInput)){
             Toast.makeText(this, "Please put a valid email", Toast.LENGTH_SHORT).show();
         }
 
@@ -85,6 +88,13 @@ public class Registerpage extends AppCompatActivity {
         String regex = "^[a-zA-Z0-9_!#$%&amp;'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+
+        String regex = "^\\d{10}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
     }
 }
