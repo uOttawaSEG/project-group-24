@@ -28,8 +28,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8bb76b44-547e-4c65-adc4-88f764018981" name="Changes" comment="working login page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/ActivityWelcome.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/ActivityWelcome.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_welcome.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_welcome.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EAMS/app/src/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/users/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,6 +163,9 @@
   <component name="RecentsManager">
     <key name="android.template.-2078499797">
       <recent name="com.example.eams" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/EAMS/app/src/users" />
     </key>
     <key name="android.template.-1824831751">
       <recent name="com.example.eams" />
