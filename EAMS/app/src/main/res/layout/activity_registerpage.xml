@@ -30,7 +30,7 @@
             android:id="@+id/first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="first_name"
+            android:hint="first name"
             android:inputType="textPersonName"
             android:minHeight="48dp"
             android:padding="10dp"
@@ -102,6 +102,7 @@
             android:layout_height="wrap_content"
             android:textOff="Attendee"
             android:textOn="Organizer"
+            android:checked="false"
             android:text="ToggleButton" />
 
         <Button

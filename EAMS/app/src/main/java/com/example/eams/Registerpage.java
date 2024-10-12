@@ -5,6 +5,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,13 +23,6 @@ public class Registerpage extends AppCompatActivity {
 
         initializeViews();
         setClickListeners();
-        role.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                roleName = "Organizer";
-            } else {
-                roleName = "Attendee";
-            }
-        });
     }
 
     private void initializeViews() {
@@ -40,14 +35,25 @@ public class Registerpage extends AppCompatActivity {
         confirmpass=findViewById(R.id.confirmpassword);
         role =findViewById(R.id.role1);
         create = findViewById(R.id.submitButton);
+        roleName="Attendee";
+
+
     }
 
     private void setClickListeners() {
         create.setOnClickListener(v -> createUser());
+        role.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                roleName = "Organizer";
+            } else {
+                roleName = "Attendee";
+            }
+        });
     }
 
     private void createUser() {
-        System.out.println(role);
+        System.out.println("this ois the role" + roleName);
+
         String firstName = firstname.getText().toString().trim();
         String lastName = lastname.getText().toString().trim();
         String emailInput = email.getText().toString().trim();
@@ -61,8 +67,34 @@ public class Registerpage extends AppCompatActivity {
                 confirmPassInput.isEmpty() || roleName==null)
         {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            return;
+
         }
-        Toast.makeText(this, "User created!", Toast.LENGTH_SHORT).show();
+        else if(!isValidPhoneNumber(phoneInput)){
+            Toast.makeText(this, "Please enter a phone number in this format: 0123456789", Toast.LENGTH_SHORT).show();
+        }
+        else if(!passwordInput.equals(confirmPassInput)){
+            Toast.makeText(this, "Password do not match", Toast.LENGTH_SHORT).show();
+        }
+        else if(!isEmailValid(emailInput)){
+            Toast.makeText(this, "Please put a valid email", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+    }
+
+    public boolean isEmailValid(String email){
+        //code from https://howtodoinjava.com/java/regex/java-regex-validate-email-address/
+        String regex = "^[a-zA-Z0-9_!#$%&amp;'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+
+        String regex = "^\\d{10}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        return matcher.matches();
     }
 }
