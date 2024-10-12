@@ -1,6 +1,7 @@
 package com.example.eams;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +21,12 @@ public class ActivityWelcome extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        initWelcomeMessage();
+    }
+
+    private void initWelcomeMessage(){
+        TextView welcomeTextView = findViewById(R.id.welcomeTextView);
+        welcomeTextView.setText("Welcome! You are logged in as " + "Attendees");
     }
 }
