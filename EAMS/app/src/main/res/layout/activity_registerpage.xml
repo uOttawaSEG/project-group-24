@@ -5,59 +5,90 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
     tools:context=".Registerpage">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/time"
-            android:layout_width="260dp"
+            android:id="@+id/title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login"
+            android:text="register"
             android:textAlignment="center"
-            android:textSize="30sp" />
-
+            android:textSize="30sp"
+            android:layout_marginBottom="16dp" />
 
         <EditText
-            android:id="@+id/username"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="260dp"
+            android:id="@+id/first_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:autofillHints="username"
-            android:inputType="textEmailAddress"
-            android:text="@string/email"
-
+            android:hint="first_name"
+            android:inputType="textPersonName"
             android:padding="10dp"
-            android:textColor="@color/black"
-            android:textSize="30sp"
-            tools:ignore="LabelFor" />
+            android:textSize="18sp" />
 
+        <EditText
+            android:id="@+id/last_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="last_name"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            android:textSize="18sp" />
 
-
-
-
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:padding="10dp"
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/password"
-            android:layout_width="260dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:hint="password"
             android:inputType="textPassword"
-            android:text="Password"
             android:padding="10dp"
-            android:textSize="30dp" />
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="phone_number"
+            android:inputType="phone"
+            android:padding="10dp"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="address"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:padding="10dp"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/submitButton"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="16dp"
             android:onClick="enable"
-            android:text="Submit!"
-            android:textSize="25dp" />
+            android:text="register"
+            android:textSize="25sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
