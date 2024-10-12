@@ -8,8 +8,7 @@
     android:gravity="center"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"
-    >
-
+    tools:ignore="ExtraText">
 
     <TextView
         android:id="@+id/time"
@@ -19,43 +18,31 @@
         android:textAlignment="center"
         android:textSize="30sp" />
 
-
     <EditText
         android:id="@+id/username"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:autofillHints="username"
         android:inputType="textEmailAddress"
-        android:text="@string/email"
-
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:textSize="30sp"
-        tools:ignore="LabelFor" />
-
-
-
-
-
+        android:hint="@string/email"
+    android:padding="10dp"
+    android:textColor="@color/black"
+    android:textSize="30sp"
+    tools:ignore="LabelFor" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:inputType="textPassword"
-        android:text="Password"
-        android:padding="10dp"
-        android:textSize="30dp" />
+        android:hint="Password"
+    android:padding="10dp"
+    android:textSize="30sp" />
 
     <Button
         android:id="@+id/submitButton"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:onClick="enable"
         android:text="Submit!"
-        android:textSize="25dp" />
+        android:textSize="25sp" />
 </LinearLayout>
