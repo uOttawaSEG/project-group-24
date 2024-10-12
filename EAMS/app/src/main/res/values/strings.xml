@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">EAMS</string>
+    <string name="Login">Login</string>
+    <string name="Email">email</string>
+    <string name="Password">password</string>
+    <string name="submit">Submit!</string>
+    <string name="register">Register</string>
 </resources>
