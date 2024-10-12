@@ -1,6 +1,9 @@
 package com.example.eams;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,16 +12,43 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+    //UI component
+    private EditText username, password;
+    private Button register, login;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        initializeViews();
+        setClickListeners();
     }
+    private void initializeViews() {
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+        register = findViewById(R.id.Register);
+        login = findViewById(R.id.submitButton);
+
+    }
+
+    private void setClickListeners() {
+        register.setOnClickListener(v -> RegisterUser());
+        login.setOnClickListener(v -> LoginUser());
+
+    }
+
+    private void LoginUser() {
+        Intent intent = new Intent(MainActivity.this, ActivityWelcome.class);
+        startActivity(intent);
+    }
+
+    private void RegisterUser() {
+        Intent intent = new Intent(MainActivity.this, Registerpage.class);
+        startActivity(intent);
+    }
+
+
 }
