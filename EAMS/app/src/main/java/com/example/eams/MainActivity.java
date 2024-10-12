@@ -1,5 +1,6 @@
 package com.example.eams;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,11 +41,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void LoginUser() {
-        System.out.println("hello");
+        Intent intent = new Intent(MainActivity.this, ActivityWelcome.class);
+        startActivity(intent);
     }
 
     private void RegisterUser() {
-        
+        Intent intent = new Intent(MainActivity.this, Registerpage.class);
+        startActivity(intent);
     }
 
 
