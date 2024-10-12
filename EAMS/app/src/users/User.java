@@ -45,9 +45,49 @@ public abstract class User {
     }
 
     /**
-     * toString method so it can represent the object in a logical format
-     * Not showing sensitive information such as password and address
+     * Get the first name of the user
+     *
+     * @return String, the first name of the user
      */
+    public String getLastName(){
+        return this.LastName;
+    }
+    /**
+     * Get the ast name of the user
+     *
+     * @return String, the last name of the user
+     */
+    public String getEmail(){
+        return this.email;
+    }
+    /**
+     * Get the password of the user
+     *
+     * @return String, the password of the user
+     */
+    public String getPassword(){
+        return this.password;
+    }
+    /**
+     * Get the address of the user
+     *
+     * @return String, the address of the user
+     */
+    public String getAddress(){
+        return this.address;}
+    /**
+     * Get the phone number of the user
+     *
+     * @return integer, the phone number of the user
+     */
+    public String getPhoneNumber(){
+        return this.phoneNum;
+
+
+        /**
+         * toString method so it can represent the object in a logical format
+         * Not showing sensitive information such as password and address
+         */
     public String toString(){
         return "\n\tFirst Name: "+this.firstName+
                 "\n\tLast Name: "+this.lastName+
