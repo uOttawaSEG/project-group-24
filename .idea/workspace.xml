@@ -28,8 +28,9 @@
   <component name="ChangeListManager">
     <list default="true" id="8bb76b44-547e-4c65-adc4-88f764018981" name="Changes" comment="working login page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_registerpage.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_registerpage.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/Registerpage.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/Registerpage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +128,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1

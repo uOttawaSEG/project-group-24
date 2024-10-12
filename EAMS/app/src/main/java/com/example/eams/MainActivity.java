@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
     //UI component
+
     private EditText username, password;
     private Button register, login;
 
