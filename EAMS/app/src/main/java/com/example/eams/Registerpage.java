@@ -16,7 +16,7 @@ public class Registerpage extends AppCompatActivity {
     private EditText firstname, lastname, email, password, phone, address,confirmpass;
     private ToggleButton role;
     private String roleName;
-    private Button create;
+    private Button create, goBack;
     private DatabaseHelper databaseHelper;
 
 
@@ -42,6 +42,7 @@ public class Registerpage extends AppCompatActivity {
         confirmpass=findViewById(R.id.confirmpassword);
         role =findViewById(R.id.role1);
         create = findViewById(R.id.submitButton);
+        goBack = findViewById(R.id.fromRegisterToMainPage);
         roleName="Attendee";
 
 
@@ -49,6 +50,7 @@ public class Registerpage extends AppCompatActivity {
 
     private void setClickListeners() {
         create.setOnClickListener(v -> createUser());
+        goBack.setOnClickListener(v -> goBackToMain());
         role.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 roleName = "Organizer";
@@ -89,12 +91,17 @@ public class Registerpage extends AppCompatActivity {
         boolean isInserted = databaseHelper.addUser(firstName, lastName, emailInput, passwordInput, phoneInput, addressInput, roleName);
         if (isInserted) {
             Toast.makeText(this, "User added successfully", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Registerpage.this, MainActivity.class);
+            startActivity(intent);
         } else {
             Toast.makeText(this, "Error adding user", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    private void goBackToMain() {
         Intent intent = new Intent(Registerpage.this, MainActivity.class);
         startActivity(intent);
-
     }
 
     public boolean isEmailValid(String email){

@@ -112,8 +112,18 @@
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:onClick="enable"
-            android:text="register"
+            android:text="Register"
             android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/fromRegisterToMainPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="enable"
+            android:text="Go Back"
+            android:textSize="25sp" />
+
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
