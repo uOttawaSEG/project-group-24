@@ -88,7 +88,7 @@ public class Registerpage extends AppCompatActivity {
 
         boolean isInserted = databaseHelper.addUser(firstName, lastName, emailInput, passwordInput, phoneInput, addressInput, roleName);
         if (isInserted) {
-            Toast.makeText(this, "User added succeboolean isInserted = databaseHelper.addUser(firstName, lastName, emailInput, passwordInput, Integer.parseInt(phoneInput), addressInput, roleName);ssfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User added successfully", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Error adding user", Toast.LENGTH_SHORT).show();
         }
