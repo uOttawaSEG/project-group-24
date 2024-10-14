@@ -1,24 +1,35 @@
 package com.example.eams;
+
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.widget.Toast;
-public class Registerpage extends AppCompatActivity {
-    private EditText firstname, lastname, email, password, phone, address;
-    private Button create;
+import android.widget.ToggleButton;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Registerpage extends AppCompatActivity {
+    private EditText firstname, lastname, email, password, phone, address,confirmpass;
+    private ToggleButton role;
+    private String roleName;
+    private Button create;
+    private DatabaseHelper databaseHelper;
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_registerpage);
 
         initializeViews();
         setClickListeners();
+
+        // Initialize the database helper here
+        databaseHelper = new DatabaseHelper(this); // Properly initialize the global variable
     }
 
     private void initializeViews() {
@@ -28,37 +39,77 @@ public class Registerpage extends AppCompatActivity {
         password = findViewById(R.id.password);
         phone = findViewById(R.id.phone_number);
         address = findViewById(R.id.address);
+        confirmpass=findViewById(R.id.confirmpassword);
+        role =findViewById(R.id.role1);
+        create = findViewById(R.id.submitButton);
+        roleName="Attendee";
+
 
     }
 
     private void setClickListeners() {
         create.setOnClickListener(v -> createUser());
-
-
+        role.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                roleName = "Organizer";
+            } else {
+                roleName = "Attendee";
+            }
+        });
     }
 
     private void createUser() {
 
-        //add to database
-    }
-    private void validateEmail() {
-        EditText editTextEmail = findViewById(R.id.email); // Ensure you have the correct ID
-        String email = editTextEmail.getText().toString().trim();
 
-        // Check if the email contains '@' and has something before and after it
-        if (email.contains("@")) {
-            String[] parts = email.split("@");
-            if (parts.length == 2 && !parts[0].isEmpty() && !parts[1].isEmpty()) {
-                // Valid email
-                Toast.makeText(this, "Email is valid", Toast.LENGTH_SHORT).show();
-            } else {
-                // Invalid email (empty part before or after @)
-                Toast.makeText(this, "Invalid email. Please check the format.", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            // Invalid email (does not contain @)
-            Toast.makeText(this, "Invalid email. Please include '@'", Toast.LENGTH_SHORT).show();
+        String firstName = firstname.getText().toString().trim();
+        String lastName = lastname.getText().toString().trim();
+        String emailInput = email.getText().toString().trim();
+        String passwordInput = password.getText().toString().trim();
+        String confirmPassInput = confirmpass.getText().toString().trim();
+        String phoneInput = phone.getText().toString().trim();
+        String addressInput = address.getText().toString().trim();
+
+        if (firstName.isEmpty() || lastName.isEmpty() || emailInput.isEmpty() ||
+                passwordInput.isEmpty() || phoneInput.isEmpty() || addressInput.isEmpty() ||
+                confirmPassInput.isEmpty() || roleName==null)
+        {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+
         }
+        else if(!isValidPhoneNumber(phoneInput)){
+            Toast.makeText(this, "Please enter a phone number in this format: 0123456789", Toast.LENGTH_SHORT).show();
+        }
+        else if(!passwordInput.equals(confirmPassInput)){
+            Toast.makeText(this, "Password do not match", Toast.LENGTH_SHORT).show();
+        }
+        else if(!isEmailValid(emailInput)){
+            Toast.makeText(this, "Please put a valid email", Toast.LENGTH_SHORT).show();
+        }
+
+        boolean isInserted = databaseHelper.addUser(firstName, lastName, emailInput, passwordInput, phoneInput, addressInput, roleName);
+        if (isInserted) {
+            Toast.makeText(this, "User added successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error adding user", Toast.LENGTH_SHORT).show();
+        }
+        Intent intent = new Intent(Registerpage.this, MainActivity.class);
+        startActivity(intent);
+
+    }
+
+    public boolean isEmailValid(String email){
+        //code from https://howtodoinjava.com/java/regex/java-regex-validate-email-address/
+        String regex = "^[a-zA-Z0-9_!#$%&amp;'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+
+        String regex = "^\\d{10}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        return matcher.matches();
     }
 
 }

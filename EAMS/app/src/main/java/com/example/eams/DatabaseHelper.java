@@ -1,10 +1,12 @@
+package com.example.eams;
 import static android.accounts.AccountManager.KEY_PASSWORD;
-
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -35,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + KEY_EMAIL + " TEXT PRIMARY KEY,"
                 + KEY_PASS + " TEXT,"
                 + KEY_ADDRESS + " TEXT,"
-                + KEY_NUMBER + " INTEGER,"
+                + KEY_NUMBER + " TEXT,"
                 + KEY_ROLE + " TEXT" + ")";
         db.execSQL(CREATE_USERS_TABLE);
     }
@@ -49,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addUser(String firstName, String lastName, String email, String password, Integer phoneNum, String address, String role) {
+    public boolean addUser(String firstName, String lastName, String email, String password, String phoneNum, String address, String role) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -61,8 +63,59 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ADDRESS, address);
         values.put(KEY_ROLE, role);
 
-        // Inserting Row
-        db.insert(TABLE_USERS, null, values);
+        long result = db.insert(TABLE_USERS, null, values);
         db.close(); // Closing database connection
+
+        // Check if insert was successful (result != -1 means success)
+        return result != -1;
+    }
+
+    // Check if the email exists in the database
+    public boolean isValidUser(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        boolean exists = false;
+
+        try {
+            String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{email});
+            exists = cursor.getCount() > 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return exists;
+    }
+
+    public String getUserRole(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String role = null;
+
+        try {
+            // SQL query to get the role of the user by email
+            String query = "SELECT " + KEY_ROLE + " FROM " + TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{email});
+
+            if (cursor.moveToFirst()) {
+                // Use getColumnIndexOrThrow to ensure column exists
+                role = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ROLE));
+                Log.d("DatabaseHelper", "Role found: " + role);
+            } else {
+                Log.e("DatabaseHelper", "No user found with email: " + email);
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error fetching role", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();  // Close the database connection
+        }
+
+        return role;
     }
 }

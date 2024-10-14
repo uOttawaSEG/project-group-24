@@ -2,3 +2,4 @@
 *.idea/
 BookLibrarySqlite
 *.class
+/.idea/workspace.xml
