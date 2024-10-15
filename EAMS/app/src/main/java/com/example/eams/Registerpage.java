@@ -76,16 +76,20 @@ public class Registerpage extends AppCompatActivity {
                 confirmPassInput.isEmpty() || roleName==null)
         {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
 
         }
         else if(!isValidPhoneNumber(phoneInput)){
             Toast.makeText(this, "Please enter a phone number in this format: 0123456789", Toast.LENGTH_SHORT).show();
+            return;
         }
         else if(!passwordInput.equals(confirmPassInput)){
             Toast.makeText(this, "Password do not match", Toast.LENGTH_SHORT).show();
+            return;
         }
         else if(!isEmailValid(emailInput)){
             Toast.makeText(this, "Please put a valid email", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         boolean isInserted = databaseHelper.addUser(firstName, lastName, emailInput, passwordInput, phoneInput, addressInput, roleName);
