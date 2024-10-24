@@ -53,9 +53,8 @@ public class MainActivity extends AppCompatActivity {
         // Hardcoded admin credentials
         if (inputEmail.equals(adminname) && inputPassword.equals(adminpassword)) {
             // Admin login, redirect to welcome screen with admin role
-            Intent welcomeIntent = new Intent(MainActivity.this, ActivityWelcome.class);
-            welcomeIntent.putExtra("roleName", "Administrator");
-            startActivity(welcomeIntent);
+            Intent adminIntent = new Intent(MainActivity.this, AdminHome.class);
+            startActivity(adminIntent);
             return;
         }
 
