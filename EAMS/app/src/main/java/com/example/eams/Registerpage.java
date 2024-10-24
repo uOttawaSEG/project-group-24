@@ -45,7 +45,6 @@ public class Registerpage extends AppCompatActivity {
         goBack = findViewById(R.id.fromRegisterToMainPage);
         roleName="Attendee";
 
-
     }
 
     private void setClickListeners() {
