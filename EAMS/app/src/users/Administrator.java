@@ -30,6 +30,38 @@ public class Administrator extends User{
     }
 
     /**
+     * method to approve user registration
+     * @return
+     */
+    public void approvedRegistration(User request){
+        if(rejectedRequests.contains(request)){
+            rejectedRequests.remove(request);
+        }
+        approvedRequests.add(request);
+        request.setApproved(true);
+    }
+
+    /**
+     * method to reject user registration
+     * @return
+     */
+    public void  regectRegistration(User request){
+        if(approvedRequests.contains(request)){
+            approvedRequests.remove(request);
+        }
+        rejectedRequests.add(request);
+        request.setRejected(true);
+    }
+
+    /**
+     * method that allows view of all rejections
+     */
+    public ArrayList<User> viewRejections(){
+        return rejectedRequests;
+    }
+
+
+    /**
      * toString method to create a logical representation of the object
      *
      * @return logical representation of the object
@@ -39,4 +71,6 @@ public class Administrator extends User{
         return "Administrator" + super.toString();
 
     }
+
+
 }
