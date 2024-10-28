@@ -79,7 +79,7 @@ public class Administrator extends User{
      */
     public void rejectRegistration(){
         // TODO
-        f (!request.isApproved()) {
+        if(!request.isApproved()) {
             request.reject();
             inbox.remove(request);  // Remove from inbox after rejection
             rejectedRequests.add(request);  // Add to rejected list
