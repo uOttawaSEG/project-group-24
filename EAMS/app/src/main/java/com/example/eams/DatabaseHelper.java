@@ -1,5 +1,4 @@
 package com.example.eams;
-import static android.accounts.AccountManager.KEY_PASSWORD;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
@@ -15,6 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Users";
 
     private static final String TABLE_USERS = "Users";
+
 
     private static final String KEY_EMAIL = "email";
     private static final String KEY_FIRST_NAME = "first_name";
@@ -118,4 +121,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return role;
     }
+
+    public List<UserRegistration> connectToDatabase() {
+        List<UserRegistration> userList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            String selectQuery = "SELECT * FROM " + TABLE_USERS;
+            cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    String firstName = cursor.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_NAME));
+                    String lastName = cursor.getString(cursor.getColumnIndexOrThrow(KEY_LAST_NAME));
+                    String email = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EMAIL));
+                    String password = cursor.getString(cursor.getColumnIndexOrThrow(KEY_PASS));
+                    String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NUMBER));
+                    String address = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ADDRESS));
+                    String role = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ROLE));
+
+                    UserRegistration user = new UserRegistration(firstName, lastName, email, password, phoneNumber, address, role);
+                    userList.add(user);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error reading user data", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return userList;
+    }
+
 }

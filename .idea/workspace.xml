@@ -35,6 +35,11 @@
           <theme>@style/Theme.EAMS</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/EAMS/app/src/main/res/layout/user_list_item.xml">
+        <config>
+          <theme>@style/Theme.EAMS</theme>
+        </config>
+      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
@@ -43,6 +48,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8bb76b44-547e-4c65-adc4-88f764018981" name="Changes" comment="Merge remote-tracking branch 'origin/main'">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,8 +85,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -123,12 +129,26 @@
     &quot;assignee&quot;: &quot;jadavc&quot;
   }
 }</component>
+  <component name="GitHubPullRequestState"><![CDATA[{
+  "prStates": [
+    {
+      "id": {
+        "id": "PR_kwDOM7K-EM6ASr7R",
+        "number": 11
+      },
+      "lastSeen": 1730232274909
+    }
+  ]
+}]]></component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/uOttawaSEG/project-group-24.git&quot;,
 
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_inbox.xml" root0="SKIP_INSPECTION" />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -137,51 +157,58 @@
 }</component>
   <component name="ProjectId" id="2n8I7N84nBDYJEj8rhGmiQJMK3q" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android App.EAMS.app.executor&quot;: &quot;Run&quot;,
-    &quot;Android App.MainActivity.executor&quot;: &quot;Run&quot;,
-    &quot;ApkExportedModule&quot;: &quot;EAMS.app&quot;,
-    &quot;ExportApk.ApkPathForEAMS.app&quot;: &quot;/Users/mathew/Desktop/uni_autonme_(2024)/SEG_2105/project-group-24/EAMS/app&quot;,
-    &quot;Gradle./Users/dave/AndroidStudioProjects/project-group-24.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.EAMS.executor&quot;: &quot;Run&quot;,
-    &quot;PROJECT_TRUSTED_KEY&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;ToolWindowLayout Validation.ShowToolbar&quot;: &quot;false&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;MEme&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/mathew/Desktop/uni_autonme_(2024)/SEG_2105/project-group-24&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android App.EAMS.app.executor": "Run",
+    "Android App.MainActivity.executor": "Run",
+    "ApkExportedModule": "EAMS.app",
+    "ExportApk.ApkPathForEAMS.app": "/Users/mathew/Desktop/uni_autonme_(2024)/SEG_2105/project-group-24/EAMS/app",
+    "Gradle./Users/dave/AndroidStudioProjects/project-group-24.executor": "Run",
+    "Gradle.EAMS.executor": "Run",
+    "PROJECT_TRUSTED_KEY": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "ToolWindowLayout Validation.ShowToolbar": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "#11 on MEme",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/mathew/Desktop/uni_autonme_(2024)/SEG_2105/project-group-24",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;ExportApk.BuildVariants&quot;: [
-      &quot;release&quot;
+  "keyToStringList": {
+    "ExportApk.BuildVariants": [
+      "release"
     ],
-    &quot;com.android.tools.idea.sqlite.queryhistory&quot;: [
-      &quot;\nUPDATE Users SET last_name = \&quot;Desmornes\&quot; WHERE email = \&quot;bradleydesmornes@gmail.com\&quot;&quot;
+    "com.android.tools.idea.sqlite.queryhistory": [
+      "\nUPDATE Users SET last_name = \"Desmornes\" WHERE email = \"bradleydesmornes@gmail.com\""
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.example.eams" />
+    </key>
     <key name="android.template.-2078499797">
       <recent name="com.example.eams" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams" />
+    </key>
+    <key name="android.template.1231190985">
+      <recent name="com.example.eams" />
     </key>
     <key name="android.template.-1824831751">
       <recent name="com.example.eams" />
@@ -438,6 +465,7 @@
     </task>
     <task id="LOCAL-00005" summary="Merge remote-tracking branch 'origin/main'">
       <option name="closed" value="true" />
+
       <created>1729907912745</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
@@ -459,6 +487,7 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1730144224687</updated>
+
     </task>
     <option name="localTasksCounter" value="8" />
     <servers />
