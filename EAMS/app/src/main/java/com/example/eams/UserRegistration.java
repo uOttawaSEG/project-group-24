@@ -36,7 +36,7 @@ public class UserRegistration {
         return password;
     }
 
-    public String getPhone() {
+    public String getPhoneNumber() {
         return phone;
     }
 
