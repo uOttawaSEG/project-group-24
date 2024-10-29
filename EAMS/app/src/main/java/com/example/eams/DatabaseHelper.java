@@ -186,4 +186,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userList;
     }
 
+    // Method to get users with "pending" status
+    public List<UserRegistration> getPendingUsers() {
+        List<UserRegistration> pendingUsers = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + KEY_STATUS + " = ?";
+            cursor = db.rawQuery(query, new String[]{"pending"});
+
+            if (cursor.moveToFirst()) {
+                do {
+                    String firstName = cursor.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_NAME));
+                    String lastName = cursor.getString(cursor.getColumnIndexOrThrow(KEY_LAST_NAME));
+                    String email = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EMAIL));
+                    String password = cursor.getString(cursor.getColumnIndexOrThrow(KEY_PASS));
+                    String phoneNum = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NUMBER));
+                    String address = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ADDRESS));
+                    String role = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ROLE));
+
+                    UserRegistration user = new UserRegistration(firstName, lastName, email, password, phoneNum, address, role);
+                    pendingUsers.add(user);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error fetching pending users", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return pendingUsers;
+    }
+
 }

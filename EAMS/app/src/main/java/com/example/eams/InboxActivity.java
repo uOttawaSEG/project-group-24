@@ -34,8 +34,8 @@ public class InboxActivity extends AppCompatActivity {
 
         ListView listView = findViewById(R.id.listviews);
 
-        // Retrieve the user list from the database using your SQL query
-        List<UserRegistration> userList = databaseHelper.connectToDatabase();
+        // Retrieve the pending users list from the database
+        List<UserRegistration> userList = databaseHelper.getPendingUsers();
 
         Log.d("InboxActivity", "User List: " + userList.toString());
 
@@ -43,22 +43,18 @@ public class InboxActivity extends AppCompatActivity {
         ArrayAdapter<UserRegistration> arrayAdapter = new ArrayAdapter<UserRegistration>(this, android.R.layout.simple_list_item_1, userList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                // Inflate the view if necessary
                 if (convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
                 }
 
-                // Get the current user
                 UserRegistration user = getItem(position);
 
-                // Find the TextViews in the layout
                 TextView text1 = convertView.findViewById(android.R.id.text1);
                 TextView text2 = convertView.findViewById(android.R.id.text2);
 
-                // Set the user information (you can customize this as needed)
                 if (user != null) {
-                    text1.setText(String.format("%s %s", user.getFirstName(), user.getLastName())); // Display full name
-                    text2.setText(user.getEmail()); // Display email or any other attribute
+                    text1.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+                    text2.setText(user.getEmail());
                 }
 
                 return convertView;
@@ -69,19 +65,19 @@ public class InboxActivity extends AppCompatActivity {
 
         // Set up long click listener for the list view
         listView.setOnItemLongClickListener((adapterView, view, position, id) -> {
-            UserRegistration user = userList.get(position); // Get the clicked user
-            showUpdateDeleteDialog(user.getEmail(), user.getFirstName() + " " + user.getLastName()); // Call your method to show the dialog
+            UserRegistration user = userList.get(position);
+            showUpdateDeleteDialog(user.getEmail(), user.getFirstName() + " " + user.getLastName());
             return true;
         });
     }
 
     private void initializeViews() {
         registrationInfo = findViewById(R.id.registrationInfo);
-        backButton = findViewById(R.id.backButton); // Keep only backButton
+        backButton = findViewById(R.id.backButton);
     }
 
     private void setClickListeners() {
-        backButton.setOnClickListener(v -> goBackToMain()); // Only backButton listener
+        backButton.setOnClickListener(v -> goBackToMain());
     }
 
     private void goBackToMain() {
