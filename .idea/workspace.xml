@@ -48,7 +48,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8bb76b44-547e-4c65-adc4-88f764018981" name="Changes" comment="Merge remote-tracking branch 'origin/main'">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/InboxActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/InboxActivity.java" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,6 +110,12 @@
         </map>
       </branch-storage>
     </favorite-branches>
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="main" />
@@ -459,27 +465,29 @@
     </task>
     <task id="LOCAL-00005" summary="Merge remote-tracking branch 'origin/main'">
       <option name="closed" value="true" />
-      <created>1730161100571</created>
+
+      <created>1729907912745</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
       <option name="project" value="LOCAL" />
-      <updated>1730161100571</updated>
+      <updated>1729907912745</updated>
     </task>
     <task id="LOCAL-00006" summary="Merge remote-tracking branch 'origin/main'">
       <option name="closed" value="true" />
-      <created>1730232151713</created>
+      <created>1730144211330</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1730232151714</updated>
+      <updated>1730144211330</updated>
     </task>
     <task id="LOCAL-00007" summary="Merge remote-tracking branch 'origin/main'">
       <option name="closed" value="true" />
-      <created>1730232202011</created>
+      <created>1730144224687</created>
       <option name="number" value="00007" />
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
-      <updated>1730232202011</updated>
+      <updated>1730144224687</updated>
+
     </task>
     <option name="localTasksCounter" value="8" />
     <servers />
