@@ -15,20 +15,6 @@
         android:padding="8dp" />
 
     <Button
-        android:id="@+id/acceptButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Accept"
-        android:layout_marginTop="16dp" />
-
-    <Button
-        android:id="@+id/rejectButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Reject"
-        android:layout_marginTop="8dp" />
-
-    <Button
         android:id="@+id/backButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
