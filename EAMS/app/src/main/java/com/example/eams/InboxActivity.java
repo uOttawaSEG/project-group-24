@@ -55,10 +55,13 @@ public class InboxActivity extends AppCompatActivity{
     }
 
     private void Rejecting() {
-
+        Intent intent = new Intent();
+        startActivity(intent);
     }
 
     private void Accepting() {
+        Intent intent = new Intent();
+        startActivity(intent);
     }
 
     private void goBackToMain() {
