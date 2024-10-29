@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_USERS = "Users";
 
-
     private static final String KEY_EMAIL = "email";
     private static final String KEY_FIRST_NAME = "first_name";
     private static final String KEY_LAST_NAME = "last_name";
@@ -26,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_NUMBER = "phone_number";
     private static final String KEY_ADDRESS = "address";
     private static final String KEY_ROLE = "role";
+    private static final String KEY_STATUS = "status";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -41,7 +40,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + KEY_PASS + " TEXT,"
                 + KEY_ADDRESS + " TEXT,"
                 + KEY_NUMBER + " TEXT,"
-                + KEY_ROLE + " TEXT" + ")";
+                + KEY_ROLE + " TEXT,"
+                + KEY_STATUS + ")";
         db.execSQL(CREATE_USERS_TABLE);
     }
 
@@ -120,6 +120,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return role;
+    }
+
+    public String getKeyStatus(String email){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String status = null;
+
+        try {
+            // SQL query to get the role of the user by email
+            String query = "SELECT " + KEY_STATUS + " FROM " + TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{email});
+
+            if (cursor.moveToFirst()) {
+                // Use getColumnIndexOrThrow to ensure column exists
+                status = cursor.getString(cursor.getColumnIndexOrThrow(KEY_STATUS));
+                Log.d("DatabaseHelper", "Status found: " + status);
+            } else {
+                Log.e("DatabaseHelper", "No user found with email: " + email);
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error fetching role", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();  // Close the database connection
+        }
+
+        return status;
     }
 
     public List<UserRegistration> connectToDatabase() {
