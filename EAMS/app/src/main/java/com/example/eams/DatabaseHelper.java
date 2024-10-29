@@ -186,4 +186,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userList;
     }
 
+    public Cursor getPendingApplications() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_APPLICATIONS + " WHERE status = ?", new String[]{"pending"});
+    }
+
+    public boolean addApplication(String email, String otherDetails) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_EMAIL, email);
+
+        long result = db.insert("Applications", null, values);
+        db.close();
+        return result != -1;
+    }
+
+    public boolean updateApplicationStatus(int applicationId, String newStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_STATUS, newStatus);
+        return db.update(TABLE_APPLICATIONS, values, KEY_APPLICATION_ID + " = ?", new String[]{String.valueOf(applicationId)}) > 0;
+    }
+
+    public boolean updateUserStatus(String email, String newStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_STATUS, newStatus);
+        return db.update(TABLE_USERS, values, KEY_EMAIL + " = ?", new String[]{email}) > 0;
+    }
+
+    public String getUserEmailFromApplicationId(int applicationId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String email = null;
+        try {
+            cursor = db.query(TABLE_APPLICATIONS, new String[]{KEY_EMAIL},
+                    KEY_APPLICATION_ID + " = ?",
+                    new String[]{String.valueOf(applicationId)},
+                    null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                email = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EMAIL));
+            }
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return email;
+    }
+
+    public String getUserStatus(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String status = null;
+
+        try {
+            String query = "SELECT " + KEY_STATUS + " FROM " + TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{email});
+
+            if (cursor.moveToFirst()) {
+                status = cursor.getString(cursor.getColumnIndexOrThrow(KEY_STATUS));
+            }
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return status;
+    }
+
+
 }
