@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + KEY_ADDRESS + " TEXT,"
                 + KEY_NUMBER + " TEXT,"
                 + KEY_ROLE + " TEXT,"
-                + KEY_STATUS + ")";
+                + KEY_STATUS + " TEXT DEFAULT 'pending')";
         db.execSQL(CREATE_USERS_TABLE);
     }
 
@@ -187,14 +187,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Method to get users with "pending" status
-    public List<UserRegistration> getPendingUsers() {
+    public List<UserRegistration> getUserStatus(String status) {
         List<UserRegistration> pendingUsers = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
         try {
             String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + KEY_STATUS + " = ?";
-            cursor = db.rawQuery(query, new String[]{"pending"});
+            cursor = db.rawQuery(query, new String[]{status});
 
             if (cursor.moveToFirst()) {
                 do {
@@ -221,5 +221,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return pendingUsers;
     }
+
+    public boolean updateUserStatus(String email, String newStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_STATUS, newStatus); // Use the constant for the status column
+
+        // Use the email to identify the user for the update
+        int result = db.update(TABLE_USERS, values, KEY_EMAIL + " = ?", new String[]{email});
+        db.close();
+        return result > 0; // Returns true if at least one row was updated
+    }
+
+
 
 }
