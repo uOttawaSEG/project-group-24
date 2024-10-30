@@ -186,6 +186,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userList;
     }
 
+
     // Method to get users with "pending" status
     public List<UserRegistration> getUserStatus(String status) {
         List<UserRegistration> pendingUsers = new ArrayList<>();
@@ -218,7 +219,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             db.close();
         }
-
         return pendingUsers;
     }
 
@@ -232,7 +232,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return result > 0; // Returns true if at least one row was updated
     }
-
-
 
 }
