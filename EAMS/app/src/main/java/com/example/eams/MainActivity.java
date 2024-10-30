@@ -13,15 +13,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    //UI component
-
+    // UI component
     private EditText username, password;
     private Button register, login;
     public DatabaseHelper databaseHelper;
-    private final String adminname ="admin";
-    private final String adminpassword ="123";
-
-
+    private final String adminname = "admin";
+    private final String adminpassword = "123";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +29,17 @@ public class MainActivity extends AppCompatActivity {
         setClickListeners();
         databaseHelper = new DatabaseHelper(this); // Properly initialize the global variable
     }
+
     private void initializeViews() {
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         register = findViewById(R.id.Register);
         login = findViewById(R.id.submitButton);
-
     }
 
     private void setClickListeners() {
         register.setOnClickListener(v -> RegisterUser());
         login.setOnClickListener(v -> LoginUser());
-
     }
 
     private void LoginUser() {
@@ -66,14 +62,29 @@ public class MainActivity extends AppCompatActivity {
 
         // Check if the email and password are valid for regular users
         if (databaseHelper.isValidUser(inputEmail)) {
-            // Get the user's role from the database
+            // Get the user's role and status from the database
             String userRole = databaseHelper.getUserRole(inputEmail);
+            String userStatus = databaseHelper.getKeyStatus(inputEmail); // Assuming you have this method
 
-            // If the user role is found, proceed to the welcome screen with the user's role
+            // If the user role is found, proceed to the appropriate screen based on their status
             if (userRole != null) {
-                Intent welcomeIntent = new Intent(MainActivity.this, ActivityWelcome.class);
-                welcomeIntent.putExtra("roleName", userRole);  // Pass the user's role to the next activity
-                startActivity(welcomeIntent);
+                Intent intent;
+                switch (userStatus) {
+                    case "accepted":
+                        intent = new Intent(MainActivity.this, ActivityWelcome.class);
+                        intent.putExtra("roleName", userRole);  // Pass the user's role to the next activity
+                        break;
+                    case "rejected":
+                        intent = new Intent(MainActivity.this, RejectedActivity.class); // Activity for rejected users
+                        break;
+                    case "pending":
+                        intent = new Intent(MainActivity.this, PendingActivity.class); // Activity for pending users
+                        break;
+                    default:
+                        intent = new Intent(MainActivity.this, MainActivity.class); // Redirect to main if status is unknown
+                        break;
+                }
+                startActivity(intent);
             } else {
                 Toast.makeText(this, "Failed to retrieve user role", Toast.LENGTH_SHORT).show();
             }
@@ -86,6 +97,4 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, Registerpage.class);
         startActivity(intent);
     }
-
-
 }

@@ -14,14 +14,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class InboxActivity extends AppCompatActivity {
     private TextView registrationInfo;
     private Button backButton;
     private DatabaseHelper databaseHelper;
-    private List<UserRegistration> pendingRegistrations;
-    private int currentIndex = 0; // Tracks the current registration
+    private ListView listView;
+    private ArrayAdapter<UserRegistration> arrayAdapter; // Declare ArrayAdapter here
+    private List<UserRegistration> userList; // Declare userList here
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,33 +35,55 @@ public class InboxActivity extends AppCompatActivity {
         setClickListeners();
         databaseHelper = new DatabaseHelper(this);
 
-        ListView listView = findViewById(R.id.listviews);
+        listView = findViewById(R.id.listviews);
 
-        // Retrieve the user list from the database using your SQL query
-        List<UserRegistration> userList = databaseHelper.connectToDatabase();
+        // Load the pending users from the database
+        loadPendingUsers();
 
+        // Set up long click listener for the list view
+        listView.setOnItemLongClickListener((adapterView, view, position, id) -> {
+            UserRegistration user = userList.get(position);
+            showUpdateDeleteDialog(user.getEmail(), user.getFirstName() + " " + user.getLastName());
+            return true;
+        });
+    }
+
+    private void initializeViews() {
+        registrationInfo = findViewById(R.id.registrationInfo);
+        backButton = findViewById(R.id.backButton);
+    }
+
+    private void setClickListeners() {
+        backButton.setOnClickListener(v -> goBackToMain());
+    }
+
+    private void goBackToMain() {
+        Intent intent = new Intent(InboxActivity.this, AdminHome.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadPendingUsers() {
+        // Retrieve the pending users list from the database
+        userList = databaseHelper.getUserStatus("pending");
         Log.d("InboxActivity", "User List: " + userList.toString());
 
         // Create an ArrayAdapter for UserRegistration objects
-        ArrayAdapter<UserRegistration> arrayAdapter = new ArrayAdapter<UserRegistration>(this, android.R.layout.simple_list_item_1, userList) {
+        arrayAdapter = new ArrayAdapter<UserRegistration>(this, android.R.layout.simple_list_item_1, userList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                // Inflate the view if necessary
                 if (convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
                 }
 
-                // Get the current user
                 UserRegistration user = getItem(position);
 
-                // Find the TextViews in the layout
                 TextView text1 = convertView.findViewById(android.R.id.text1);
                 TextView text2 = convertView.findViewById(android.R.id.text2);
 
-                // Set the user information (you can customize this as needed)
                 if (user != null) {
-                    text1.setText(String.format("%s %s", user.getFirstName(), user.getLastName())); // Display full name
-                    text2.setText(user.getEmail()); // Display email or any other attribute
+                    text1.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+                    text2.setText(user.getEmail());
                 }
 
                 return convertView;
@@ -66,28 +91,6 @@ public class InboxActivity extends AppCompatActivity {
         };
 
         listView.setAdapter(arrayAdapter);
-
-        // Set up long click listener for the list view
-        listView.setOnItemLongClickListener((adapterView, view, position, id) -> {
-            UserRegistration user = userList.get(position); // Get the clicked user
-            showUpdateDeleteDialog(user.getEmail(), user.getFirstName() + " " + user.getLastName()); // Call your method to show the dialog
-            return true;
-        });
-    }
-
-    private void initializeViews() {
-        registrationInfo = findViewById(R.id.registrationInfo);
-        backButton = findViewById(R.id.backButton); // Keep only backButton
-    }
-
-    private void setClickListeners() {
-        backButton.setOnClickListener(v -> goBackToMain()); // Only backButton listener
-    }
-
-    private void goBackToMain() {
-        Intent intent = new Intent(InboxActivity.this, AdminHome.class);
-        startActivity(intent);
-        finish();
     }
 
     // Method to show update/delete dialog
@@ -117,27 +120,33 @@ public class InboxActivity extends AppCompatActivity {
         });
 
         // Back button click listener
-        statusBackButton.setOnClickListener(v -> {
-            alertDialog.dismiss(); // Just close the dialog
-        });
+        statusBackButton.setOnClickListener(v -> alertDialog.dismiss());
     }
 
-    // Placeholder method for accepting a user
+    // Method to accept a user by updating their status
     private void acceptUser(String userId) {
-        // Add your logic to accept the user (e.g., update the database)
-        Toast.makeText(this, "User accepted: " + userId, Toast.LENGTH_SHORT).show();
+        boolean isUpdated = databaseHelper.updateUserStatus(userId, "accepted");
+        if (isUpdated) {
+            Toast.makeText(this, "User accepted: " + userId, Toast.LENGTH_SHORT).show();
+            refreshPendingUsers(); // Refresh the list
+        } else {
+            Toast.makeText(this, "Failed to accept user: " + userId, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    // Placeholder method for rejecting a user
+    // Method to reject a user by updating their status
     private void rejectUser(String userId) {
-        // Add your logic to reject the user (e.g., update the database)
-        Toast.makeText(this, "User rejected: " + userId, Toast.LENGTH_SHORT).show();
+        boolean isUpdated = databaseHelper.updateUserStatus(userId, "rejected");
+        if (isUpdated) {
+            Toast.makeText(this, "User rejected: " + userId, Toast.LENGTH_SHORT).show();
+            refreshPendingUsers(); // Refresh the list
+        } else {
+            Toast.makeText(this, "Failed to reject user: " + userId, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void Back() {
-        // Add your logic to reject the user (e.g., update the database)
-
+    // Method to refresh the list of pending users
+    private void refreshPendingUsers() {
+        loadPendingUsers(); // Reload the pending users from the database
     }
-
-
 }

@@ -1,26 +1,17 @@
-<!-- activity_inbox.xml -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/Rejections"
+        android:id="@+id/rejectedTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Rejection Inbox"
+        android:text="Rejected Users"
         android:textSize="18sp"
         android:padding="8dp" />
-
-    <Button
-        android:id="@+id/acceptButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Accept"
-        android:layout_marginTop="16dp" />
-
 
     <Button
         android:id="@+id/backButton"
@@ -28,10 +19,12 @@
         android:layout_height="wrap_content"
         android:text="Back"
         android:layout_marginTop="8dp" />
+
     <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listview">
-    </ListView>
+        android:id="@+id/rejectedUsersListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"/>
 
 </LinearLayout>

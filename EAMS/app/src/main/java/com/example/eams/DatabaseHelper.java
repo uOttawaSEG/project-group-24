@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + KEY_ADDRESS + " TEXT,"
                 + KEY_NUMBER + " TEXT,"
                 + KEY_ROLE + " TEXT,"
-                + KEY_STATUS + ")";
+                + KEY_STATUS + " TEXT DEFAULT 'pending')";
         db.execSQL(CREATE_USERS_TABLE);
     }
 
@@ -186,78 +186,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userList;
     }
 
-    public Cursor getPendingApplications() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_APPLICATIONS + " WHERE status = ?", new String[]{"pending"});
-    }
 
-    public boolean addApplication(String email, String otherDetails) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_EMAIL, email);
-
-        long result = db.insert("Applications", null, values);
-        db.close();
-        return result != -1;
-    }
-
-    public boolean updateApplicationStatus(int applicationId, String newStatus) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_STATUS, newStatus);
-        return db.update(TABLE_APPLICATIONS, values, KEY_APPLICATION_ID + " = ?", new String[]{String.valueOf(applicationId)}) > 0;
-    }
-
-    public boolean updateUserStatus(String email, String newStatus) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_STATUS, newStatus);
-        return db.update(TABLE_USERS, values, KEY_EMAIL + " = ?", new String[]{email}) > 0;
-    }
-
-    public String getUserEmailFromApplicationId(int applicationId) {
+    // Method to get users with "pending" status
+    public List<UserRegistration> getUserStatus(String status) {
+        List<UserRegistration> pendingUsers = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
-        String email = null;
-        try {
-            cursor = db.query(TABLE_APPLICATIONS, new String[]{KEY_EMAIL},
-                    KEY_APPLICATION_ID + " = ?",
-                    new String[]{String.valueOf(applicationId)},
-                    null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                email = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EMAIL));
-            }
-
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return email;
-    }
-
-    public String getUserStatus(String email) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        String status = null;
 
         try {
-            String query = "SELECT " + KEY_STATUS + " FROM " + TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?";
-            cursor = db.rawQuery(query, new String[]{email});
+            String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + KEY_STATUS + " = ?";
+            cursor = db.rawQuery(query, new String[]{status});
 
             if (cursor.moveToFirst()) {
-                status = cursor.getString(cursor.getColumnIndexOrThrow(KEY_STATUS));
-            }
+                do {
+                    String firstName = cursor.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_NAME));
+                    String lastName = cursor.getString(cursor.getColumnIndexOrThrow(KEY_LAST_NAME));
+                    String email = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EMAIL));
+                    String password = cursor.getString(cursor.getColumnIndexOrThrow(KEY_PASS));
+                    String phoneNum = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NUMBER));
+                    String address = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ADDRESS));
+                    String role = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ROLE));
 
+                    UserRegistration user = new UserRegistration(firstName, lastName, email, password, phoneNum, address, role);
+                    pendingUsers.add(user);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error fetching pending users", e);
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
             db.close();
         }
-
-        return status;
+        return pendingUsers;
     }
 
+    public boolean updateUserStatus(String email, String newStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_STATUS, newStatus); // Use the constant for the status column
+
+        // Use the email to identify the user for the update
+        int result = db.update(TABLE_USERS, values, KEY_EMAIL + " = ?", new String[]{email});
+        db.close();
+        return result > 0; // Returns true if at least one row was updated
+    }
 
 }

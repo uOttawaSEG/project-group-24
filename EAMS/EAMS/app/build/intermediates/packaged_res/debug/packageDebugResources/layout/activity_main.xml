@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    tools:ignore="ExtraText">
+
+    <TextView
+        android:id="@+id/Login"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Login"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="username"
+        android:inputType="textEmailAddress"
+        android:hint="@string/Email"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        tools:ignore="LabelFor" />
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:hint="@string/Password"
+        android:padding="10dp"
+        android:textSize="30sp" />
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/submit"
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/Register"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:textSize="25sp"/>
+</LinearLayout>
