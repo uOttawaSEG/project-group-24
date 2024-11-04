@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +13,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class ActivityWelcome extends AppCompatActivity {
-    private Button logout;
+    private Button logout, proceed;
+
+    // This variable sets the delayed milli seconds for the page to automatically redirect to another
+    private int delayMillis = 3000;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +36,14 @@ public class ActivityWelcome extends AppCompatActivity {
         initWelcomeMessage();
     }
 
+
     private void initializeViews() {
         logout = findViewById(R.id.logoutButton);
     }
 
     private void setClickListeners() {
         logout.setOnClickListener(v -> logoutUser());
+        proceed.setOnClickListener(v -> toHome());
 
     }
 
@@ -52,5 +58,24 @@ public class ActivityWelcome extends AppCompatActivity {
         String role = intent.getStringExtra("roleName");
         TextView welcomeTextView = findViewById(R.id.welcomeTextView);
         welcomeTextView.setText("Welcome! \n You are logged in as\n" + role);
+    }
+
+    private void toHome(){
+        Intent intent = getIntent();
+        Intent next;
+        String role = intent.getStringExtra("roleName");
+        //proceed to different home page base on roleName
+        if(role.equals("Attendee")){
+            //for deliverable 4
+            next = null;
+            Toast.makeText(this, "Attendee function is not implemented until deliverable 4.", Toast.LENGTH_SHORT).show();
+        }
+        else if(role.equals("Organizer")){
+            next = new Intent(ActivityWelcome.this, OrganizerHome.class);
+            startActivity(next);
+        }
+        else{
+            Toast.makeText(this, "Error occured, cannot proceed!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

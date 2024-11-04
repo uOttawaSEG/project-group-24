@@ -33,4 +33,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
+
+    <Button
+        android:id="@+id/proceedButotn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Proceed"
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="143dp"
+        tools:layout_editor_absoluteY="594dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
