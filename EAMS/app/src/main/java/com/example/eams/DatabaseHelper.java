@@ -26,6 +26,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ROLE = "role";
     private static final String KEY_STATUS = "status";
 
+    // Add these constants for the Events table
+    private static final String TABLE_EVENTS = "events";
+    private static final String COLUMN_EVENT_ID = "event_id";
+    private static final String COLUMN_EVENT_TITLE = "title";
+    private static final String COLUMN_EVENT_DESCRIPTION = "description";
+    private static final String COLUMN_EVENT_DATE = "date";
+    private static final String COLUMN_EVENT_START_TIME = "start_time";
+    private static final String COLUMN_EVENT_END_TIME = "end_time";
+    private static final String COLUMN_EVENT_ADDRESS = "address";
+    private static final String COLUMN_EVENT_APPROVAL_REQUIRED = "approval_required";
+    private static final String COLUMN_EVENT_ORGANIZER_ID = "organizer_id";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -43,12 +55,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + KEY_ROLE + " TEXT,"
                 + KEY_STATUS + " TEXT DEFAULT 'pending')";
         db.execSQL(CREATE_USERS_TABLE);
+
+        // Add Events table creation
+        String createEventsTable = "CREATE TABLE " + TABLE_EVENTS + "("
+                + COLUMN_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_EVENT_TITLE + " TEXT NOT NULL, "
+                + COLUMN_EVENT_DESCRIPTION + " TEXT NOT NULL, "
+                + COLUMN_EVENT_DATE + " TEXT NOT NULL, "
+                + COLUMN_EVENT_START_TIME + " TEXT NOT NULL, "
+                + COLUMN_EVENT_END_TIME + " TEXT NOT NULL, "
+                + COLUMN_EVENT_ADDRESS + " TEXT NOT NULL, "
+                + COLUMN_EVENT_APPROVAL_REQUIRED + " INTEGER NOT NULL, "
+                + COLUMN_EVENT_ORGANIZER_ID + " TEXT NOT NULL"
+                + ")";
+        db.execSQL(createEventsTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS);
 
         // Create tables again
         onCreate(db);
@@ -231,6 +258,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int result = db.update(TABLE_USERS, values, KEY_EMAIL + " = ?", new String[]{email});
         db.close();
         return result > 0; // Returns true if at least one row was updated
+    }
+
+    // Add this method to save events
+    public boolean addEvent(String title, String description, String date, 
+                          String startTime, String endTime, String address, 
+                          boolean approvalRequired, String organizerId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_EVENT_TITLE, title);
+        values.put(COLUMN_EVENT_DESCRIPTION, description);
+        values.put(COLUMN_EVENT_DATE, date);
+        values.put(COLUMN_EVENT_START_TIME, startTime);
+        values.put(COLUMN_EVENT_END_TIME, endTime);
+        values.put(COLUMN_EVENT_ADDRESS, address);
+        values.put(COLUMN_EVENT_APPROVAL_REQUIRED, approvalRequired ? 1 : 0);
+        values.put(COLUMN_EVENT_ORGANIZER_ID, organizerId);
+
+        long result = db.insert(TABLE_EVENTS, null, values);
+        return result != -1;
     }
 
 }

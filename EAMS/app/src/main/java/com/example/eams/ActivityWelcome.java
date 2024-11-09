@@ -64,18 +64,19 @@ public class ActivityWelcome extends AppCompatActivity {
         Intent intent = getIntent();
         Intent next;
         String role = intent.getStringExtra("roleName");
-        //proceed to different home page base on roleName
+        String email = intent.getStringExtra("email");
+        
         if(role.equals("Attendee")){
-            //for deliverable 4
             next = null;
             Toast.makeText(this, "Attendee function is not implemented until deliverable 4.", Toast.LENGTH_SHORT).show();
         }
         else if(role.equals("Organizer")){
             next = new Intent(ActivityWelcome.this, OrganizerHome.class);
+            next.putExtra("email", email);
             startActivity(next);
         }
         else{
-            Toast.makeText(this, "Error occured, cannot proceed!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error occurred, cannot proceed!", Toast.LENGTH_SHORT).show();
         }
     }
 }

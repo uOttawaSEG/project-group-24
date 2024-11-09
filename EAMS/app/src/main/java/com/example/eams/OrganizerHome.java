@@ -9,11 +9,16 @@ public class OrganizerHome extends AppCompatActivity {
 
     //UI components
     private Button create, view, logout;
+    private String organizerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_home);
+
+        // Get the organizer's email from the intent
+        organizerId = getIntent().getStringExtra("email");
+
         initializeViews();
         setClickListeners();
     }
@@ -30,18 +35,21 @@ public class OrganizerHome extends AppCompatActivity {
         logout.setOnClickListener(v -> logoutUser());
     }
 
-    private void openCreateEvents(){
-
+    private void openCreateEvents() {
+        Intent intent = new Intent(OrganizerHome.this, CreateEventActivity.class);
+        intent.putExtra("organizerId", organizerId); // Pass the organizer's email to CreateEventActivity
+        startActivity(intent);
     }
 
-    private void openViewEvents(){
-
+    private void openViewEvents() {
+        // This should be implemented later for viewing events
+        
     }
 
     private void logoutUser() {
         Intent intent = new Intent(OrganizerHome.this, MainActivity.class);
         startActivity(intent);
-        finish(); // Ensures the user cannot return to this activity by pressing back
+        finish();
     }
 
 }

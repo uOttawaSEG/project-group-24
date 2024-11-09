@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     case "accepted":
                         intent = new Intent(MainActivity.this, ActivityWelcome.class);
                         intent.putExtra("roleName", userRole);  // Pass the user's role to the next activity
+                        intent.putExtra("email", inputEmail); // Add this line to pass the email
                         break;
                     case "rejected":
                         intent = new Intent(MainActivity.this, RejectedActivity.class); // Activity for rejected users

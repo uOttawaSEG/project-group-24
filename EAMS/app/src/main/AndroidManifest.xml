@@ -46,6 +46,8 @@
         </activity>
         <activity android:name=".InboxActivity" />
         <activity android:name=".RejectedRequests" />
+        <activity android:name=".CreateEventActivity" 
+                  android:exported="false" />
     </application>
 
 </manifest>
