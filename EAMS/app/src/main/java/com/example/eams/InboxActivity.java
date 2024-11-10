@@ -1,5 +1,6 @@
 package com.example.eams;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -23,8 +24,8 @@ public class InboxActivity extends AppCompatActivity {
     private Button backButton;
     private DatabaseHelper databaseHelper;
     private ListView listView;
-    private ArrayAdapter<UserRegistration> arrayAdapter; // Declare ArrayAdapter here
-    private List<UserRegistration> userList; // Declare userList here
+    private ArrayAdapter<UserRegistration> arrayAdapter;
+    private List<UserRegistration> userList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +104,7 @@ public class InboxActivity extends AppCompatActivity {
         Button buttonAccept = dialogView.findViewById(R.id.acceptButton);
         Button buttonReject = dialogView.findViewById(R.id.rejectButton);
         Button statusBackButton = dialogView.findViewById(R.id.statusBackButton);
+        Button buttonShowDetails = dialogView.findViewById(R.id.showDetailsButton);
 
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
@@ -116,6 +118,12 @@ public class InboxActivity extends AppCompatActivity {
         // Reject button click listener
         buttonReject.setOnClickListener(v -> {
             rejectUser(userId); // Implement reject logic here
+            alertDialog.dismiss();
+        });
+
+        // Show Details button click listener
+        buttonShowDetails.setOnClickListener(v -> {
+            showUserDetails(userId); // Show user details on button click
             alertDialog.dismiss();
         });
 
@@ -144,6 +152,42 @@ public class InboxActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to reject user: " + userId, Toast.LENGTH_SHORT).show();
         }
     }
+
+    // Method to show user details in a Toast message
+    private void showUserDetails(String userId) {
+        // Retrieve user details from the database
+        UserRegistration user = databaseHelper.getUserById(userId);
+
+        if (user != null) {
+            // Create the message to show in the dialog
+            String message = "Name: " + user.getFirstName() + " " + user.getLastName() + "\n" +
+                    "Phone: " + user.getPhoneNumber() + "\n" +
+                    "Address: " + user.getAddress() + "\n" +
+                    "Role: " + user.getRole() + "\n" +
+                    "Email: " + user.getEmail();
+
+            // Create the AlertDialog builder
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("User Details");  // Title of the dialog
+            builder.setMessage(message);      // Set the message (user details)
+
+            // Add a "Close" button to dismiss the dialog
+            builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();  // Close the dialog
+                }
+            });
+
+            // Create and show the dialog
+            builder.create().show();
+
+        } else {
+            // If user details not found, show a message in a Toast
+            Toast.makeText(this, "User details not found for ID: " + userId, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     // Method to refresh the list of pending users
     private void refreshPendingUsers() {

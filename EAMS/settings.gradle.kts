@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "EAMS"
-include(":app")
+include(":app", ":EAMS")

@@ -221,6 +221,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return pendingUsers;
     }
+    public UserRegistration getUserById(String userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        UserRegistration user = null;
+
+        try {
+            String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{userId});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                String firstName = cursor.getString(cursor.getColumnIndexOrThrow(KEY_FIRST_NAME));
+                String lastName = cursor.getString(cursor.getColumnIndexOrThrow(KEY_LAST_NAME));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EMAIL));
+                String password = cursor.getString(cursor.getColumnIndexOrThrow(KEY_PASS));
+                String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(KEY_NUMBER));
+                String address = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ADDRESS));
+                String role = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ROLE));
+
+                // Create the UserRegistration object without the status
+                user = new UserRegistration(firstName, lastName, email, password, phoneNumber, address, role);
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error fetching user by ID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return user;
+    }
+
 
     public boolean updateUserStatus(String email, String newStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -232,5 +265,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return result > 0; // Returns true if at least one row was updated
     }
+
 
 }

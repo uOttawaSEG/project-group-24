@@ -26,9 +26,16 @@
         android:text="Reject User" />
 
     <Button
+        android:id="@+id/showDetailsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Details" />
+    <Button
         android:id="@+id/statusBackButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Back" />
+
+
 
 </LinearLayout>
