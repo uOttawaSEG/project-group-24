@@ -42,30 +42,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // SQL statement for creating the Users table
-        String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + " ("
-                + KEY_FIRST_NAME + " TEXT,"
-                + KEY_LAST_NAME + " TEXT,"
-                + KEY_EMAIL + " TEXT PRIMARY KEY,"
-                + KEY_PASS + " TEXT,"
-                + KEY_ADDRESS + " TEXT,"
-                + KEY_NUMBER + " INTEGER,"
-                + KEY_ROLE + " TEXT,"
-                + KEY_STATUS + " TEXT)";
+        try {
+            // SQL statement for creating the Users table
+            String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + " ("
+                    + KEY_FIRST_NAME + " TEXT,"
+                    + KEY_LAST_NAME + " TEXT,"
+                    + KEY_EMAIL + " TEXT PRIMARY KEY,"
+                    + KEY_PASS + " TEXT,"
+                    + KEY_ADDRESS + " TEXT,"
+                    + KEY_NUMBER + " INTEGER,"
+                    + KEY_ROLE + " TEXT,"
+                    + KEY_STATUS + " TEXT)";
 
-        // Add Events table creation
-        String CREATE_EVENTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EVENTS + " ("
-                + KEY_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + KEY_EVENT_NAME + " TEXT,"
-                + KEY_EVENT_DATE + " TEXT,"
-                + KEY_EVENT_TIME + " TEXT,"
-                + KEY_EVENT_LOCATION + " TEXT,"
-                + KEY_EVENT_DESCRIPTION + " TEXT,"
-                + KEY_EVENT_ORGANIZER + " TEXT,"
-                + KEY_EVENT_REQUIRES_APPROVAL + " INTEGER)";
+            // Add Events table creation
+            String CREATE_EVENTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EVENTS + " ("
+                    + KEY_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + KEY_EVENT_NAME + " TEXT NOT NULL,"
+                    + KEY_EVENT_DATE + " TEXT NOT NULL,"
+                    + KEY_EVENT_TIME + " TEXT NOT NULL,"
+                    + KEY_EVENT_LOCATION + " TEXT NOT NULL,"
+                    + KEY_EVENT_DESCRIPTION + " TEXT,"
+                    + KEY_EVENT_ORGANIZER + " TEXT NOT NULL,"
+                    + KEY_EVENT_REQUIRES_APPROVAL + " INTEGER NOT NULL,"
+                    + "FOREIGN KEY(" + KEY_EVENT_ORGANIZER + ") REFERENCES " 
+                    + TABLE_USERS + "(" + KEY_EMAIL + "))";
 
-        db.execSQL(CREATE_USERS_TABLE);
-        db.execSQL(CREATE_EVENTS_TABLE);
+            db.execSQL(CREATE_USERS_TABLE);
+            db.execSQL(CREATE_EVENTS_TABLE);
+            Log.d("DatabaseHelper", "Tables created successfully");
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error creating tables: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -299,17 +306,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         
-        values.put(KEY_EVENT_NAME, title);
-        values.put(KEY_EVENT_DESCRIPTION, description);
-        values.put(KEY_EVENT_DATE, date);
-        values.put(KEY_EVENT_TIME, startTime + "-" + endTime);
-        values.put(KEY_EVENT_LOCATION, location);
-        values.put(KEY_EVENT_ORGANIZER, organizerId);
-        values.put(KEY_EVENT_REQUIRES_APPROVAL, requiresApproval ? 1 : 0);
-        
-        long result = db.insert(TABLE_EVENTS, null, values);
-        db.close();
-        return result != -1;
+        try {
+            // Log all input values
+            Log.d("DatabaseHelper", "Adding event with values:");
+            Log.d("DatabaseHelper", "Title: " + title);
+            Log.d("DatabaseHelper", "Description: " + description);
+            Log.d("DatabaseHelper", "Date: " + date);
+            Log.d("DatabaseHelper", "Time: " + startTime + "-" + endTime);
+            Log.d("DatabaseHelper", "Location: " + location);
+            Log.d("DatabaseHelper", "Organizer: " + organizerId);
+            Log.d("DatabaseHelper", "Requires Approval: " + requiresApproval);
+            
+            values.put(KEY_EVENT_NAME, title);
+            values.put(KEY_EVENT_DESCRIPTION, description);
+            values.put(KEY_EVENT_DATE, date);
+            values.put(KEY_EVENT_TIME, startTime + "-" + endTime);
+            values.put(KEY_EVENT_LOCATION, location);
+            values.put(KEY_EVENT_ORGANIZER, organizerId);
+            values.put(KEY_EVENT_REQUIRES_APPROVAL, requiresApproval ? 1 : 0);
+            
+            long result = db.insert(TABLE_EVENTS, null, values);
+            Log.d("DatabaseHelper", "Insert result: " + result);
+            return result != -1;
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error adding event: " + e.getMessage(), e);
+            return false;
+        } finally {
+            db.close();
+        }
     }
 
     // Method to get all events
