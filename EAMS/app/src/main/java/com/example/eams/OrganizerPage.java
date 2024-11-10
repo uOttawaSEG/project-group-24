@@ -62,7 +62,9 @@ public class OrganizerPage extends AppCompatActivity {
     }
 
     private void viewEvents() {
-        Toast.makeText(this, "Viewing Events is not implemented yet", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(OrganizerPage.this, ViewEventActivity.class);
+        intent.putExtra("organizerId", getIntent().getStringExtra("userName"));
+        startActivity(intent);
     }
 
     // Method to handle logging out and navigating back to the main activity

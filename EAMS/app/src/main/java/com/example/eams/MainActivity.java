@@ -74,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
                             String userEmail = String.valueOf(username);
                             if (userRole.equals("Attendee")) {
                                 intent = new Intent(MainActivity.this, AttendeePage.class);
-                                intent.putExtra("userName", userEmail);
+                                intent.putExtra("userName", inputEmail);
                             } else {
                                 intent = new Intent(MainActivity.this, OrganizerPage.class);
-                                intent.putExtra("userName", userEmail);
+                                intent.putExtra("userName", inputEmail);
 
                             }
                             break;

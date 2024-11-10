@@ -1,5 +1,13 @@
 package com.example.eams;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+
 public class Event {
     private int eventId;
     private String eventName;
@@ -94,5 +102,25 @@ public class Event {
 
     public void setEventOrganizer(String eventOrganizer) {
         this.eventOrganizer = eventOrganizer;
+    }
+
+    // Method to check if the event is a past event
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public boolean isPastEvent() {
+        // Parse event end time as LocalDateTime for comparison
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime eventEndTime = LocalDateTime.parse(eventDate + " " + endTime, formatter);
+
+        // Get current time in EST (Eastern Standard Time)
+        LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("America/New_York"));
+
+        // Check if the event's end time is before the current time
+        return eventEndTime.isBefore(currentTime);
+    }
+
+    @Override
+    public String toString() {
+        // Customize the string representation to show meaningful information
+        return eventName + " (" + eventDate + " " + startTime + " - " + endTime + ")";
     }
 }

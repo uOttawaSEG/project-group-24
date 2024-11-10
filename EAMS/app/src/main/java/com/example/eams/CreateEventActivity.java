@@ -90,7 +90,12 @@ public class CreateEventActivity extends AppCompatActivity {
                     time.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     time.set(Calendar.MINUTE, minute);
 
-                    updateTimeButton(isStartTime);
+                    if (isStartTime && time.before(Calendar.getInstance())) {
+                        // If start time is before the current time, show a toast message
+                        Toast.makeText(CreateEventActivity.this, "Start time cannot be in the past", Toast.LENGTH_SHORT).show();
+                    } else {
+                        updateTimeButton(isStartTime);
+                    }
                 },
                 12, 0, false
         );
