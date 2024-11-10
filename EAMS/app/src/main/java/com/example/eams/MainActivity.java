@@ -61,37 +61,46 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Check if the email and password are valid for regular users
-        if (databaseHelper.isValidUser(inputEmail)) {
+        if (databaseHelper.isValidUser(inputEmail,inputPassword)) {
             // Get the user's role and status from the database
             String userRole = databaseHelper.getUserRole(inputEmail);
             String userStatus = databaseHelper.getKeyStatus(inputEmail); // Assuming you have this method
 
-            // If the user role is found, proceed to the appropriate screen based on their status
-            if (userRole != null) {
-                Intent intent;
-                switch (userStatus) {
-                    case "accepted":
-                        intent = new Intent(MainActivity.this, ActivityWelcome.class);
-                        intent.putExtra("roleName", userRole);  // Pass the user's role to the next activity
-                        break;
-                    case "rejected":
-                        intent = new Intent(MainActivity.this, RejectedActivity.class); // Activity for rejected users
-                        break;
-                    case "pending":
-                        intent = new Intent(MainActivity.this, PendingActivity.class); // Activity for pending users
-                        break;
-                    default:
-                        intent = new Intent(MainActivity.this, MainActivity.class); // Redirect to main if status is unknown
-                        break;
+                // If the user role is found, proceed to the appropriate screen based on their status
+                if (userRole != null) {
+                    Intent intent;
+                    switch (userStatus) {
+                        case "accepted":
+                            String userEmail = String.valueOf(username);
+                            if (userRole.equals("Attendee")) {
+                                intent = new Intent(MainActivity.this, AttendeePage.class);
+                                intent.putExtra("userName", userEmail);
+                            } else {
+                                intent = new Intent(MainActivity.this, OrganizerPage.class);
+                                intent.putExtra("userName", userEmail);
+
+                            }
+                            break;
+                        case "rejected":
+                            intent = new Intent(MainActivity.this, RejectedActivity.class); // Activity for rejected users
+                            break;
+                        case "pending":
+                            intent = new Intent(MainActivity.this, PendingActivity.class); // Activity for pending users
+                            break;
+                        default:
+                            intent = new Intent(MainActivity.this, MainActivity.class); // Redirect to main if status is unknown
+                            break;
+                    }
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Failed to retrieve user role", Toast.LENGTH_SHORT).show();
                 }
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Failed to retrieve user role", Toast.LENGTH_SHORT).show();
+            } else{
+                Toast.makeText(this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
         }
-    }
+
+
 
     private void RegisterUser() {
         Intent intent = new Intent(MainActivity.this, Registerpage.class);

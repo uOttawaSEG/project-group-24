@@ -47,4 +47,7 @@ public class UserRegistration {
     public String getRole() {
         return role;
     }
+
+
 }
+
