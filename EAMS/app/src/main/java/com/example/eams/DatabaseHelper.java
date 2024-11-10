@@ -74,15 +74,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Check if the email exists in the database
-    public boolean isValidUser(String email) {
+    public boolean isValidUser(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
-        boolean exists = false;
+        boolean validUser = false;
 
         try {
-            String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?";
-            cursor = db.rawQuery(query, new String[]{email});
-            exists = cursor.getCount() > 0;
+            String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + KEY_EMAIL + " = ? AND " + KEY_PASS + " = ?";
+            cursor = db.rawQuery(query, new String[]{email, password});
+
+            // Check if the cursor has any result, meaning the email and password match
+            validUser = cursor.getCount() > 0;
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -90,7 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
 
-        return exists;
+        return validUser;
     }
 
     public String getUserRole(String email) {

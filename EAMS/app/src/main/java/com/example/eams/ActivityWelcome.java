@@ -10,6 +10,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//NO USAGE CURRENTLY
 
 public class ActivityWelcome extends AppCompatActivity {
     private Button logout;
