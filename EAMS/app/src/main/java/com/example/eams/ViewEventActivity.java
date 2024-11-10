@@ -79,29 +79,52 @@ public class ViewEventActivity extends AppCompatActivity {
         ArrayAdapter<Event> pastAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pastEvents);
         past.setAdapter(pastAdapter);
 
-        // Set long click listeners on ListView items to show options (Delete or Go Back)
+        // Set long click listeners on ListView items to show options (Details, Delete, or Go Back)
         upcoming.setOnItemLongClickListener((adapterView, view, position, id) -> {
             Event event = upcomingEvents.get(position);
-            showDeleteOrBackDialog(event);
+            showOptionsDialog(event);
             return true;
         });
 
         past.setOnItemLongClickListener((adapterView, view, position, id) -> {
             Event event = pastEvents.get(position);
-            showDeleteOrBackDialog(event);
+            showOptionsDialog(event);
             return true;
         });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void showDeleteOrBackDialog(final Event event) {
+    private void showOptionsDialog(final Event event) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setMessage("What would you like to do?")
-                .setPositiveButton("Delete", (dialog, id) -> deleteEvent(event))
-                .setNegativeButton("Go Back", (dialog, id) -> dialog.dismiss())
+                .setPositiveButton("Details", (dialog, id) -> showEventDetails(event))
+                .setNegativeButton("Delete", (dialog, id) -> deleteEvent(event))
+                .setNeutralButton("Go Back", (dialog, id) -> dialog.dismiss())
                 .create()
                 .show();
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void showEventDetails(Event event) {
+        // Create a dialog to display the event details
+        AlertDialog.Builder detailsDialogBuilder = new AlertDialog.Builder(this);
+        detailsDialogBuilder.setTitle("Event Details");
+
+        // Format the details to display in the dialog
+        String detailsMessage = "Name: " + event.getEventName() + "\n" +
+                "Start Time: " + event.getStartTime() + "\n" +
+                "End Time: " + event.getEndTime() + "\n" +
+                "Description: " + event.getEventDescription() + "\n" +
+                "Location: " + event.getEventLocation() + "\n" +
+                //"Organizer: " + event.getEventOrganizer() + "\n" + //fix later now give addresse
+                "Requires Approval: " + (event.isRequiresApproval() ? "Yes" : "No") + "\n" +
+                "Attendees: " + (event.getAttendees().isEmpty() ? "No attendees yet" : String.join(", ", event.getAttendees()));
+
+        detailsDialogBuilder.setMessage(detailsMessage);
+        detailsDialogBuilder.setPositiveButton("OK", (dialog, id) -> dialog.dismiss());
+        detailsDialogBuilder.create().show();
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void deleteEvent(Event event) {

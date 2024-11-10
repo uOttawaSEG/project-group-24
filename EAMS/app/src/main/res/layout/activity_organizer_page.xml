@@ -17,25 +17,11 @@
       android:text="Welcome, Organizer!"
       android:textAlignment="center"
       android:textSize="24sp"
-      app:layout_constraintBottom_toTopOf="@+id/logoutButton"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-  <!-- Logout Button -->
-
-  <!-- Additional Information (Optional) -->
-  <Button
-      android:id="@+id/logoutButton"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Logout"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/welcomeTextView"
-      app:layout_constraintVertical_bias="0.85" />
-
+  <!-- Email TextView -->
   <TextView
       android:id="@+id/userEmailTextView"
       android:layout_width="wrap_content"
@@ -44,35 +30,54 @@
       android:gravity="center"
       android:text="Email: user@example.com"
       android:textSize="16sp"
-      app:layout_constraintBottom_toTopOf="@+id/logoutButton"
+      app:layout_constraintTop_toBottomOf="@id/welcomeTextView"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/welcomeTextView" />
+      app:layout_constraintStart_toStartOf="parent" />
 
+  <!-- Create Event Button -->
   <Button
       android:id="@+id/createButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="206dp"
-      android:layout_marginTop="420dp"
-      android:layout_marginEnd="76dp"
-      android:layout_marginBottom="263dp"
       android:text="Create event"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/userEmailTextView"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:layout_marginTop="40dp" />
 
+  <!-- View Events Button -->
   <Button
       android:id="@+id/viewButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="74dp"
-      android:layout_marginEnd="212dp"
-      android:layout_marginBottom="263dp"
       android:text="View events"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/createButton"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginTop="20dp" />
+
+  <!-- View Attendee Requests Button -->
+  <Button
+      android:id="@+id/viewAttendeeButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="View Attendee Requests"
+      app:layout_constraintTop_toBottomOf="@id/viewButton"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginTop="20dp" />
+
+  <!-- Logout Button -->
+  <Button
+      android:id="@+id/logoutButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Logout"
+      app:layout_constraintTop_toBottomOf="@id/viewAttendeeButton"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginTop="20dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintVertical_bias="0.85" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
