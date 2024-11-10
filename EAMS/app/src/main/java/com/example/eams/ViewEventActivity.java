@@ -1,18 +1,15 @@
 package com.example.eams;
 
-import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.ListView;
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewEventActivity extends AppCompatActivity {
@@ -22,6 +19,7 @@ public class ViewEventActivity extends AppCompatActivity {
     private String organizerEmail;
     private List<Event> upcomingEvents, pastEvents;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +48,29 @@ public class ViewEventActivity extends AppCompatActivity {
         back.setOnClickListener(v -> finish());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadEvents() {
+        // Fetch all events from the database
+        List<Event> allEvents = dbHelper.getAllEvents();
 
+        // Separate events into upcoming and past based on the event's end time
+        upcomingEvents = new ArrayList<>();
+        pastEvents = new ArrayList<>();
+
+        for (Event event : allEvents) {
+            if (event.isPastEvent()) {
+                pastEvents.add(event);
+            } else {
+                upcomingEvents.add(event);
+            }
+        }
+
+        // Set upcoming events to the ListView
+        ArrayAdapter<Event> upcomingAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, upcomingEvents);
+        upcoming.setAdapter(upcomingAdapter);
+
+        // Set past events to the ListView
+        ArrayAdapter<Event> pastAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pastEvents);
+        past.setAdapter(pastAdapter);
     }
-
-
 }

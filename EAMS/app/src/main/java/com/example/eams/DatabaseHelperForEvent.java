@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DatabaseHelperForEvent extends SQLiteOpenHelper {
@@ -71,6 +74,92 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    // Method to get upcoming events for a specific organizer
+    public List<Event> getUpcomingEvents(String organizerEmail) {
+        List<Event> events = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_EVENTS + " WHERE " + KEY_EVENT_ORGANIZER + " = ? AND " + KEY_EVENT_DATE + " >= ?";
+        String currentDate = getCurrentDate(); // Get the current date
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{organizerEmail, currentDate});
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    String[] timeRange = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-");
+                    String startTime = timeRange[0];
+                    String endTime = timeRange.length > 1 ? timeRange[1] : "";
+
+                    Event event = new Event(
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_ID)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_NAME)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DESCRIPTION)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DATE)),
+                            startTime,
+                            endTime,
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_LOCATION)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_REQUIRES_APPROVAL)) == 1,
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_ORGANIZER))
+                    );
+                    events.add(event);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelperForEvent", "Error fetching upcoming events: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return events;
+    }
+
+    // Method to get past events for a specific organizer
+    public List<Event> getPastEvents(String organizerEmail) {
+        List<Event> events = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_EVENTS + " WHERE " + KEY_EVENT_ORGANIZER + " = ? AND " + KEY_EVENT_DATE + " < ?";
+        String currentDate = getCurrentDate(); // Get the current date
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{organizerEmail, currentDate});
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    String[] timeRange = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-");
+                    String startTime = timeRange[0];
+                    String endTime = timeRange.length > 1 ? timeRange[1] : "";
+
+                    Event event = new Event(
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_ID)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_NAME)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DESCRIPTION)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DATE)),
+                            startTime,
+                            endTime,
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_LOCATION)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_REQUIRES_APPROVAL)) == 1,
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_ORGANIZER))
+                    );
+                    events.add(event);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelperForEvent", "Error fetching past events: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return events;
+    }
+
+    // Helper method to get the current date in "YYYY-MM-DD" format
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(new Date());
+    }
+
     public List<Event> getAllEvents() {
         List<Event> events = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -110,6 +199,7 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         return events;
     }
 
+    // Method to get a single event by its ID
     public Event getEventById(int eventId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Event event = null;
@@ -148,6 +238,7 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         return event;
     }
 
+    // Method to update an event
     public boolean updateEvent(int eventId, String title, String description, String date, String startTime, String endTime, String location, boolean requiresApproval, String organizerId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -165,6 +256,7 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
+    // Method to delete an event
     public boolean deleteEvent(int eventId) {
         SQLiteDatabase db = this.getWritableDatabase();
         int rowsAffected = db.delete(TABLE_EVENTS, KEY_EVENT_ID + " = ?", new String[]{String.valueOf(eventId)});
