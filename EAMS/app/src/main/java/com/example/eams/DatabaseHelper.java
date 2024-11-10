@@ -26,60 +26,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ROLE = "role";
     private static final String KEY_STATUS = "status";
 
-    private static final String TABLE_EVENTS = "Events";
-    private static final String KEY_EVENT_ID = "event_id";
-    private static final String KEY_EVENT_NAME = "event_name";
-    private static final String KEY_EVENT_DATE = "event_date";
-    private static final String KEY_EVENT_TIME = "event_time";
-    private static final String KEY_EVENT_LOCATION = "event_location";
-    private static final String KEY_EVENT_DESCRIPTION = "event_description";
-    private static final String KEY_EVENT_ORGANIZER = "event_organizer";
-    private static final String KEY_EVENT_REQUIRES_APPROVAL = "requires_approval";
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        try {
-            // SQL statement for creating the Users table
-            String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + " ("
-                    + KEY_FIRST_NAME + " TEXT,"
-                    + KEY_LAST_NAME + " TEXT,"
-                    + KEY_EMAIL + " TEXT PRIMARY KEY,"
-                    + KEY_PASS + " TEXT,"
-                    + KEY_ADDRESS + " TEXT,"
-                    + KEY_NUMBER + " INTEGER,"
-                    + KEY_ROLE + " TEXT,"
-                    + KEY_STATUS + " TEXT)";
-
-            // Add Events table creation
-            String CREATE_EVENTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EVENTS + " ("
-                    + KEY_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_EVENT_NAME + " TEXT NOT NULL,"
-                    + KEY_EVENT_DATE + " TEXT NOT NULL,"
-                    + KEY_EVENT_TIME + " TEXT NOT NULL,"
-                    + KEY_EVENT_LOCATION + " TEXT NOT NULL,"
-                    + KEY_EVENT_DESCRIPTION + " TEXT,"
-                    + KEY_EVENT_ORGANIZER + " TEXT NOT NULL,"
-                    + KEY_EVENT_REQUIRES_APPROVAL + " INTEGER NOT NULL,"
-                    + "FOREIGN KEY(" + KEY_EVENT_ORGANIZER + ") REFERENCES " 
-                    + TABLE_USERS + "(" + KEY_EMAIL + "))";
-
-            db.execSQL(CREATE_USERS_TABLE);
-            db.execSQL(CREATE_EVENTS_TABLE);
-            Log.d("DatabaseHelper", "Tables created successfully");
-        } catch (Exception e) {
-            Log.e("DatabaseHelper", "Error creating tables: " + e.getMessage(), e);
-        }
+        // SQL statement for creating the Users table
+        String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + " ("
+                + KEY_FIRST_NAME + " TEXT,"
+                + KEY_LAST_NAME + " TEXT,"
+                + KEY_EMAIL + " TEXT PRIMARY KEY,"
+                + KEY_PASS + " TEXT,"
+                + KEY_ADDRESS + " TEXT,"
+                + KEY_NUMBER + " TEXT,"
+                + KEY_ROLE + " TEXT,"
+                + KEY_STATUS + " TEXT DEFAULT 'pending')";
+        db.execSQL(CREATE_USERS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS);
 
         // Create tables again
         onCreate(db);
@@ -299,118 +268,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result > 0; // Returns true if at least one row was updated
     }
 
-    // Method to add a new event
-    public boolean addEvent(String title, String description, String date, 
-                           String startTime, String endTime, String location, 
-                           boolean requiresApproval, String organizerId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        
-        try {
-            // Log all input values
-            Log.d("DatabaseHelper", "Adding event with values:");
-            Log.d("DatabaseHelper", "Title: " + title);
-            Log.d("DatabaseHelper", "Description: " + description);
-            Log.d("DatabaseHelper", "Date: " + date);
-            Log.d("DatabaseHelper", "Time: " + startTime + "-" + endTime);
-            Log.d("DatabaseHelper", "Location: " + location);
-            Log.d("DatabaseHelper", "Organizer: " + organizerId);
-            Log.d("DatabaseHelper", "Requires Approval: " + requiresApproval);
-            
-            values.put(KEY_EVENT_NAME, title);
-            values.put(KEY_EVENT_DESCRIPTION, description);
-            values.put(KEY_EVENT_DATE, date);
-            values.put(KEY_EVENT_TIME, startTime + "-" + endTime);
-            values.put(KEY_EVENT_LOCATION, location);
-            values.put(KEY_EVENT_ORGANIZER, organizerId);
-            values.put(KEY_EVENT_REQUIRES_APPROVAL, requiresApproval ? 1 : 0);
-            
-            long result = db.insert(TABLE_EVENTS, null, values);
-            Log.d("DatabaseHelper", "Insert result: " + result);
-            return result != -1;
-        } catch (Exception e) {
-            Log.e("DatabaseHelper", "Error adding event: " + e.getMessage(), e);
-            return false;
-        } finally {
-            db.close();
-        }
-    }
-
-    // Method to get all events
-    public List<Event> getAllEvents() {
-        List<Event> events = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        
-        String selectQuery = "SELECT * FROM " + TABLE_EVENTS;
-        Cursor cursor = null;
-        
-        try {
-            cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    String[] timeRange = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-");
-                    Event event = new Event(
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_NAME)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DESCRIPTION)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DATE)),
-                        timeRange[0],
-                        timeRange[1],
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_LOCATION)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_REQUIRES_APPROVAL)) == 1,
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_ORGANIZER))
-                    );
-                    events.add(event);
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            Log.e("DatabaseHelper", "Error getting events", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-        
-        return events;
-    }
-
-    // Method to get events by organizer
-    public List<Event> getEventsByOrganizer(String organizerId) {
-        List<Event> events = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        
-        String selectQuery = "SELECT * FROM " + TABLE_EVENTS + 
-                            " WHERE " + KEY_EVENT_ORGANIZER + " = ?";
-        Cursor cursor = null;
-        
-        try {
-            cursor = db.rawQuery(selectQuery, new String[]{organizerId});
-            if (cursor.moveToFirst()) {
-                do {
-                    String[] timeRange = cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-");
-                    Event event = new Event(
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_NAME)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DESCRIPTION)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DATE)),
-                        timeRange[0],
-                        timeRange[1],
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_LOCATION)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_REQUIRES_APPROVAL)) == 1,
-                        cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_ORGANIZER))
-                    );
-                    events.add(event);
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            Log.e("DatabaseHelper", "Error getting events by organizer", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-        
-        return events;
-    }
 
 }
