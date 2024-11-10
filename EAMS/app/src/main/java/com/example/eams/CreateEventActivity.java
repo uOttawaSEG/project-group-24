@@ -83,16 +83,20 @@ public class CreateEventActivity extends AppCompatActivity {
         TimePickerDialog timePickerDialog = new TimePickerDialog(
                 this,
                 (view, hourOfDay, minute) -> {
-                    // Round to nearest 30 minutes
+                    // Round to the nearest 30 minutes
                     minute = (minute / 30) * 30;
 
                     Calendar time = isStartTime ? startTime : endTime;
                     time.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     time.set(Calendar.MINUTE, minute);
 
-                    if (isStartTime && time.before(Calendar.getInstance())) {
-                        // If start time is before the current time, show a toast message
-                        Toast.makeText(CreateEventActivity.this, "Start time cannot be in the past", Toast.LENGTH_SHORT).show();
+                    Calendar current = Calendar.getInstance();
+                    boolean isToday = selectedDate.get(Calendar.YEAR) == current.get(Calendar.YEAR) &&
+                            selectedDate.get(Calendar.DAY_OF_YEAR) == current.get(Calendar.DAY_OF_YEAR);
+
+                    if (isToday && time.before(current)) {
+                        // If the selected date is today and the time is in the past, show a toast
+                        Toast.makeText(CreateEventActivity.this, "Time cannot be in the past", Toast.LENGTH_SHORT).show();
                     } else {
                         updateTimeButton(isStartTime);
                     }

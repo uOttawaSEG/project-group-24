@@ -1,12 +1,13 @@
 package com.example.eams;
 
 import android.os.Build;
-
 import androidx.annotation.RequiresApi;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Event {
     private int eventId;
@@ -18,7 +19,9 @@ public class Event {
     private String eventLocation;
     private boolean requiresApproval;
     private String eventOrganizer;
+    private List<String> attendees; // List of attendees
 
+    // Constructor without attendees
     public Event(int eventId, String eventName, String eventDescription, String eventDate, String startTime, String endTime, String eventLocation, boolean requiresApproval, String eventOrganizer) {
         this.eventId = eventId;
         this.eventName = eventName;
@@ -29,6 +32,7 @@ public class Event {
         this.eventLocation = eventLocation;
         this.requiresApproval = requiresApproval;
         this.eventOrganizer = eventOrganizer;
+        this.attendees = new ArrayList<>(); // Initialize empty list of attendees
     }
 
     // Getters and Setters for all fields
@@ -102,6 +106,19 @@ public class Event {
 
     public void setEventOrganizer(String eventOrganizer) {
         this.eventOrganizer = eventOrganizer;
+    }
+
+    public List<String> getAttendees() {
+        return attendees;
+    }
+
+    public void setAttendees(List<String> attendees) {
+        this.attendees = attendees;
+    }
+
+    // Method to add an attendee to the event
+    public void addAttendee(String attendee) {
+        this.attendees.add(attendee);
     }
 
     // Method to check if the event is a past event
