@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.widget.Toast;
 
 public class OrganizerPage extends AppCompatActivity {
     private Button logout;
+    private Button create, view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +41,28 @@ public class OrganizerPage extends AppCompatActivity {
 
     // Initialize the views (like buttons and text fields)
     private void initializeViews() {
+
         logout = findViewById(R.id.logoutButton);
+        create = findViewById(R.id.createButton);
+        view = findViewById(R.id.viewButton);
     }
 
     // Set up the listeners for buttons or other UI elements
     private void setClickListeners() {
+
         logout.setOnClickListener(v -> logoutUser());
+        create.setOnClickListener(v -> createEvent());
+        view.setOnClickListener(v -> viewEvents());
+    }
+
+    private void createEvent() {
+        Intent intent = new Intent(OrganizerPage.this, CreatingEvent.class);
+        intent.putExtra("organizerId", getIntent().getStringExtra("userName"));
+        startActivity(intent);
+    }
+
+    private void viewEvents() {
+        Toast.makeText(this, "Viewing Events is not implemented yet", Toast.LENGTH_SHORT).show();
     }
 
     // Method to handle logging out and navigating back to the main activity
