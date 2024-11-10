@@ -1,3 +1,5 @@
+package com.example.eams;
+
 public class Event {
     private String title;
     private String description;

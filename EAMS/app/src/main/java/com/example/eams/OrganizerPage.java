@@ -56,7 +56,7 @@ public class OrganizerPage extends AppCompatActivity {
     }
 
     private void createEvent() {
-        Intent intent = new Intent(OrganizerPage.this, CreatingEvent.class);
+        Intent intent = new Intent(OrganizerPage.this, CreateEventActivity.class);
         intent.putExtra("organizerId", getIntent().getStringExtra("userName"));
         startActivity(intent);
     }
