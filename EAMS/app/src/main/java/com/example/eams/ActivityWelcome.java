@@ -15,8 +15,6 @@ import androidx.core.view.WindowInsetsCompat;
 public class ActivityWelcome extends AppCompatActivity {
     private Button logout, proceed;
 
-    // This variable sets the delayed milli seconds for the page to automatically redirect to another
-    private int delayMillis = 3000;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +37,7 @@ public class ActivityWelcome extends AppCompatActivity {
 
     private void initializeViews() {
         logout = findViewById(R.id.logoutButton);
+        proceed = findViewById(R.id.proceedButton);
     }
 
     private void setClickListeners() {

@@ -13,8 +13,8 @@
         android:layout_width="406dp"
         android:layout_height="200dp"
         android:layout_marginStart="20dp"
-        android:text="@string/welcome"
         android:gravity="center"
+        android:text="@string/welcome"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,11 +35,17 @@
         app:layout_constraintVertical_bias="0.023" />
 
     <Button
-        android:id="@+id/proceedButotn"
+        android:id="@+id/proceedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="143dp"
+        android:layout_marginTop="548dp"
+        android:layout_marginEnd="144dp"
+        android:layout_marginBottom="135dp"
         android:text="Proceed"
         android:textSize="20dp"
-        tools:layout_editor_absoluteX="143dp"
-        tools:layout_editor_absoluteY="594dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
