@@ -53,7 +53,7 @@
         <activity android:name=".InboxActivity" />
         <activity android:name=".RejectedRequests" />
         <activity
-            android:name=".CreatingEvent"
+            android:name=".CreateEventActivity"
             android:exported="false" />
     </application>
 

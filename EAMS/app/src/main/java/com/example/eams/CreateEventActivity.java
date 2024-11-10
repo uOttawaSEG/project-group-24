@@ -20,7 +20,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private Calendar selectedDate = Calendar.getInstance();
     private Calendar startTime = Calendar.getInstance();
     private Calendar endTime = Calendar.getInstance();
-    private DatabaseHelper databaseHelper;
+    private DatabaseHelperForEvent databaseHelper;
     private String organizerId;
 
     @Override
@@ -36,7 +36,7 @@ public class CreateEventActivity extends AppCompatActivity {
             return;
         }
 
-        databaseHelper = new DatabaseHelper(this);
+        databaseHelper = new DatabaseHelperForEvent(this);
         initializeViews();
         setClickListeners();
     }
