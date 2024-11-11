@@ -18,7 +18,8 @@ public class AttendeeList extends AppCompatActivity {
 
     private ListView attendeesListView;
     private TextView eventNameTextView, eventIdTextView;
-    private DatabaseHelperForEvent dbHelper;
+    private DatabaseHelper dbHelper;           // Database helper for user data
+    private DatabaseHelperForEvent eventHelper; // Database helper for event data
     private int eventId; // Event ID as int
 
     @Override
@@ -35,7 +36,10 @@ public class AttendeeList extends AppCompatActivity {
             return;
         }
 
-        dbHelper = new DatabaseHelperForEvent(this);
+        // Initialize the database helpers
+        dbHelper = new DatabaseHelper(this);          // For user-related database operations
+        eventHelper = new DatabaseHelperForEvent(this); // For event-related database operations
+
         attendeesListView = findViewById(R.id.attendeesListView);
         eventNameTextView = findViewById(R.id.eventNameTextView);
         eventIdTextView = findViewById(R.id.eventIdTextView);
@@ -51,8 +55,8 @@ public class AttendeeList extends AppCompatActivity {
     }
 
     private void loadAttendees() {
-        // Fetch the event details by event ID
-        Event event = dbHelper.getEventById(eventId);
+        // Fetch the event details by event ID using eventHelper
+        Event event = eventHelper.getEventById(eventId);
         if (event != null) {
             // Set event name and ID in the TextViews
             eventNameTextView.setText(event.getEventName());
@@ -72,10 +76,38 @@ public class AttendeeList extends AppCompatActivity {
             // Set the attendees to the ListView
             ArrayAdapter<String> attendeesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, attendees);
             attendeesListView.setAdapter(attendeesAdapter);
+
+            // Set a long-click listener on the ListView to show user details
+            attendeesListView.setOnItemLongClickListener((adapterView, view, position, id) -> {
+                String selectedAttendeeEmail = attendees.get(position);
+                showUserDetails(selectedAttendeeEmail);  // Pass the selected email to show user details
+                return true; // Return true to indicate that the long-click is handled
+            });
         } else {
             Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void showUserDetails(String email) {
+        // Fetch the user details using email from the DatabaseHelper
+        UserRegistration user = dbHelper.getUserByEmail(email);
 
+        if (user != null) {
+            // Create and show a dialog with the user's details
+            String detailsMessage = "Name: " + user.getFirstName() + " " + user.getLastName() + "\n" +
+                    "Email: " + user.getEmail() + "\n" +
+                    "Phone: " + user.getPhoneNumber() + "\n" +
+                    "Address: " + user.getAddress() + "\n" +
+                    "Role: " + user.getRole();
+
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("User Details")
+                    .setMessage(detailsMessage)
+                    .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
+                    .create()
+                    .show();
+        } else {
+            Toast.makeText(this, "User details not found", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
