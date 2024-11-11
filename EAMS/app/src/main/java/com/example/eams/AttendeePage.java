@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class AttendeePage extends AppCompatActivity {
 
     private Button logout; // Declare the logout button
-
+    private Button myEvents, signUp; // Declare the myevents and signup buttons
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,11 +38,24 @@ public class AttendeePage extends AppCompatActivity {
 
     private void initializeViews() {
         logout = findViewById(R.id.logoutButton); // Initialize the logout button
+        myEvents = findViewById(R.id.myEventsButton); // Initialize the myEvents button
+        signUp = findViewById(R.id.signUpButton); // Initialize the signup button
     }
 
     private void setClickListeners() {
         // Set up the logout button click listener
         logout.setOnClickListener(v -> logoutUser());
+        myEvents.setOnClickListener(v -> openMyEventsPage());
+        signUp.setOnClickListener(v -> openSignUpPage());
+    }
+
+    private void openMyEventsPage() {
+    }
+
+    private void openSignUpPage() {
+        Intent intent = new Intent(AttendeePage.this, SignUpEventActivity.class);
+        intent.putExtra("attendeeEmail", getIntent().getStringExtra("userName"));
+        startActivity(intent);
     }
 
     private void logoutUser() {
@@ -66,7 +79,7 @@ public class AttendeePage extends AppCompatActivity {
 
         // Update the user's email
 
-            userEmailTextView.setText("Email: " + userEmail);
+        userEmailTextView.setText("Email: " + userEmail);
 
     }
 }

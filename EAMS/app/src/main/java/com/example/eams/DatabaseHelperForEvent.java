@@ -18,6 +18,7 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Events";
 
     private static final String TABLE_EVENTS = "Events";
+    private static final String TABLE_EVENT_ATTENDEES = "event_attendees"; // New table for attendees
     private static final String KEY_EVENT_ID = "event_id";
     private static final String KEY_EVENT_NAME = "event_name";
     private static final String KEY_EVENT_DATE = "event_date";
@@ -26,6 +27,9 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
     private static final String KEY_EVENT_DESCRIPTION = "event_description";
     private static final String KEY_EVENT_ORGANIZER = "event_organizer";
     private static final String KEY_EVENT_REQUIRES_APPROVAL = "requires_approval";
+
+    private static final String KEY_ATTENDEE_EMAIL = "attendee_email";
+    private static final String KEY_ATTENDEE_STATUS = "status"; // 'pending' or 'approved'
 
     public DatabaseHelperForEvent(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -47,16 +51,28 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
             db.execSQL(CREATE_EVENTS_TABLE);
             Log.d("DatabaseHelperForEvent", "Events table created successfully");
 
+            // Create event_attendees table
+            String CREATE_ATTENDEES_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EVENT_ATTENDEES + " ("
+                    + KEY_EVENT_ID + " INTEGER,"
+                    + KEY_ATTENDEE_EMAIL + " TEXT NOT NULL,"
+                    + KEY_ATTENDEE_STATUS + " TEXT NOT NULL,"
+                    + "PRIMARY KEY (" + KEY_EVENT_ID + ", " + KEY_ATTENDEE_EMAIL + "),"
+                    + "FOREIGN KEY(" + KEY_EVENT_ID + ") REFERENCES " + TABLE_EVENTS + "(" + KEY_EVENT_ID + "),"
+                    + "FOREIGN KEY(" + KEY_ATTENDEE_EMAIL + ") REFERENCES Users(email))";
+            db.execSQL(CREATE_ATTENDEES_TABLE);
+            Log.d("DatabaseHelperForEvent", "Event attendees table created successfully");
+
             // Enable foreign key constraints
             db.execSQL("PRAGMA foreign_keys = ON;");
         } catch (Exception e) {
-            Log.e("DatabaseHelperForEvent", "Error creating Events table: " + e.getMessage(), e);
+            Log.e("DatabaseHelperForEvent", "Error creating tables: " + e.getMessage(), e);
         }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENT_ATTENDEES);
         onCreate(db);
     }
 
@@ -97,56 +113,6 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         );
     }
 
-    // Method to get upcoming events for a specific organizer
-    public List<Event> getUpcomingEvents(String organizerEmail) {
-        List<Event> events = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_EVENTS + " WHERE " + KEY_EVENT_ORGANIZER + " = ? AND " + KEY_EVENT_DATE + " >= ?";
-        String currentDate = getCurrentDate(); // Get the current date
-        Cursor cursor = db.rawQuery(selectQuery, new String[]{organizerEmail, currentDate});
-
-        try {
-            if (cursor.moveToFirst()) {
-                do {
-                    events.add(cursorToEvent(cursor));
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            Log.e("DatabaseHelperForEvent", "Error fetching upcoming events: " + e.getMessage(), e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-        return events;
-    }
-
-    // Method to get past events for a specific organizer
-    public List<Event> getPastEvents(String organizerEmail) {
-        List<Event> events = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_EVENTS + " WHERE " + KEY_EVENT_ORGANIZER + " = ? AND " + KEY_EVENT_DATE + " < ?";
-        String currentDate = getCurrentDate(); // Get the current date
-        Cursor cursor = db.rawQuery(selectQuery, new String[]{organizerEmail, currentDate});
-
-        try {
-            if (cursor.moveToFirst()) {
-                do {
-                    events.add(cursorToEvent(cursor));
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            Log.e("DatabaseHelperForEvent", "Error fetching past events: " + e.getMessage(), e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-        return events;
-    }
-
     // Method to get all events
     public List<Event> getAllEvents() {
         List<Event> events = new ArrayList<>();
@@ -185,30 +151,62 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         return null; // No event found for this ID
     }
 
-    // Method to update an event
-    public boolean updateEvent(int eventId, String title, String description, String date, String startTime, String endTime, String location, boolean requiresApproval, String organizerId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
+    // Method to check if an attendee is registered for an event
+    public boolean isAttendeeRegistered(int eventId, String attendeeEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_EVENT_ATTENDEES, null,
+                KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?",
+                new String[]{String.valueOf(eventId), attendeeEmail}, null, null, null);
 
-        values.put(KEY_EVENT_NAME, title);
-        values.put(KEY_EVENT_DESCRIPTION, description);
-        values.put(KEY_EVENT_DATE, date);
-        values.put(KEY_EVENT_TIME, startTime + "-" + endTime);
-        values.put(KEY_EVENT_LOCATION, location);
-        values.put(KEY_EVENT_ORGANIZER, organizerId);
-        values.put(KEY_EVENT_REQUIRES_APPROVAL, requiresApproval ? 1 : 0);
-
-        int rowsAffected = db.update(TABLE_EVENTS, values, KEY_EVENT_ID + " = ?", new String[]{String.valueOf(eventId)});
-        db.close();
-        return rowsAffected > 0;
+        if (cursor != null && cursor.moveToFirst()) {
+            cursor.close();
+            return true;  // Attendee is already registered
+        }
+        if (cursor != null) cursor.close();
+        return false;  // Attendee is not registered
     }
 
-    // Method to delete an event
-    public boolean deleteEvent(int eventId) {
+    // Method to add an attendee to an event
+    public boolean addEventAttendee(int eventId, String attendeeEmail, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rowsAffected = db.delete(TABLE_EVENTS, KEY_EVENT_ID + " = ?", new String[]{String.valueOf(eventId)});
-        db.close();
-        return rowsAffected > 0;
+
+        // Check if the attendee is already added to the event
+        if (isAttendeeRegistered(eventId, attendeeEmail)) {
+            return false;  // Attendee is already registered, no need to add again
+        }
+
+        // Insert the attendee into the event_attendees table
+        ContentValues values = new ContentValues();
+        values.put(KEY_EVENT_ID, eventId);
+        values.put(KEY_ATTENDEE_EMAIL, attendeeEmail);
+        values.put(KEY_ATTENDEE_STATUS, status);  // 'pending' or 'approved'
+
+        long result = db.insert(TABLE_EVENT_ATTENDEES, null, values);
+        return result != -1;  // Return true if insert was successful, false otherwise
+    }
+
+    // Method to get all attendees for a specific event
+    public List<String> getAttendees(int eventId) {
+        List<String> attendees = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT " + KEY_ATTENDEE_EMAIL + " FROM " + TABLE_EVENT_ATTENDEES + " WHERE " + KEY_EVENT_ID + " = ?";
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(eventId)});
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    attendees.add(cursor.getString(cursor.getColumnIndexOrThrow(KEY_ATTENDEE_EMAIL)));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelperForEvent", "Error fetching attendees: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return attendees;
     }
 
     // Helper method to get the current date in "YYYY-MM-DD" format
@@ -216,4 +214,13 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(new Date());
     }
+
+    // Method to delete an event by its ID
+    public boolean deleteEvent(int eventId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLE_EVENTS, KEY_EVENT_ID + " = ?", new String[]{String.valueOf(eventId)});
+        db.close();
+        return rowsAffected > 0;
+    }
+
 }
