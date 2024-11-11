@@ -35,6 +35,7 @@ public class Event {
         this.attendees = new ArrayList<>(); // Initialize empty list of attendees
     }
 
+
     // Getters and Setters for all fields
     public int getEventId() {
         return eventId;
