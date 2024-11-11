@@ -58,6 +58,12 @@ public class AttendeeList extends AppCompatActivity {
             eventNameTextView.setText(event.getEventName());
             eventIdTextView.setText("Event ID: " + eventId);  // Display the ID
 
+            // Check if the event requires approval
+            if (!event.isRequiresApproval()) {
+                // Show a Toast message if no approval is required
+                Toast.makeText(this, "Attendees will be automatically accepted.", Toast.LENGTH_SHORT).show();
+            }
+
             List<String> attendees = event.getAttendees(); // Get the list of attendees
             if (attendees.isEmpty()) {
                 attendees.add("No attendees yet");
@@ -70,4 +76,6 @@ public class AttendeeList extends AppCompatActivity {
             Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }
