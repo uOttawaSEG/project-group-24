@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 public class CreateEventActivity extends AppCompatActivity {
     private EditText titleInput, descriptionInput, addressInput;
@@ -120,6 +121,8 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
+
+
     private void createEvent() {
         String title = titleInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
@@ -156,8 +159,13 @@ public class CreateEventActivity extends AppCompatActivity {
         String startTimeStr = timeFormat.format(startTime.getTime());
         String endTimeStr = timeFormat.format(endTime.getTime());
 
-        // Save to database with actual organizer ID
-        boolean success = databaseHelper.addEvent(
+        // Generate a random event ID
+        Random random = new Random();
+        int randomEventId = random.nextInt(1000000);  // Generate a random number (e.g., between 0 and 999999)
+
+        // Create an Event object with the generated event ID
+        Event event = new Event(
+                randomEventId,  // Randomly generated eventId
                 title,
                 description,
                 dateStr,
@@ -165,8 +173,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 endTimeStr,
                 address,
                 requiresApproval,
-                organizerId  // Use the actual organizer ID
+                organizerId
         );
+
+        // Save the event to the database
+        boolean success = databaseHelper.addEvent(event);
 
         if (success) {
             Toast.makeText(this, "Event created successfully!", Toast.LENGTH_SHORT).show();
@@ -175,4 +186,7 @@ public class CreateEventActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to create event", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
 }

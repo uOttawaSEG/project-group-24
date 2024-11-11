@@ -1,11 +1,8 @@
 package com.example.eams;
 
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewEventActivity extends AppCompatActivity {
-    private Button back;
+    private Button back, viewAttendeesButton;
     private ListView upcoming, past;
     private DatabaseHelperForEvent dbHelper;
     private String organizerEmail;
@@ -46,12 +43,28 @@ public class ViewEventActivity extends AppCompatActivity {
 
     private void initializeViews() {
         back = findViewById(R.id.backButton);
+        viewAttendeesButton = findViewById(R.id.viewAttendeesButton); // The new button for viewing attendees
         upcoming = findViewById(R.id.upcomingEventsList);
         past = findViewById(R.id.pastEventsList);
     }
 
     private void setClickListeners() {
         back.setOnClickListener(v -> finish());
+
+        // Add a click listener for the View Attendees button
+        viewAttendeesButton.setOnClickListener(v -> openAttendeeList());
+    }
+
+    private void openAttendeeList() {
+        // Assuming the first upcoming event is selected for now
+        if (!upcomingEvents.isEmpty()) {
+            Event selectedEvent = upcomingEvents.get(0); // You can modify this logic as needed
+            Intent intent = new Intent(ViewEventActivity.this, AttendeeList.class);
+            intent.putExtra("eventId", selectedEvent.getEventId());  // Pass the event ID to the new activity
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "No upcoming events available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -79,7 +92,26 @@ public class ViewEventActivity extends AppCompatActivity {
         ArrayAdapter<Event> pastAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pastEvents);
         past.setAdapter(pastAdapter);
 
-        // Set long click listeners on ListView items to show options (Details, Delete, or Go Back)
+        // Set an item click listener for the upcoming events ListView
+        upcoming.setOnItemClickListener((adapterView, view, position, id) -> {
+            // Get the clicked event from the list
+            Event selectedEvent = upcomingEvents.get(position);
+
+            // Fetch the event from the database using the event ID
+            Event eventFromDb = dbHelper.getEventById(selectedEvent.getEventId());
+
+            // Check if the event was successfully fetched
+            if (eventFromDb != null) {
+                // Pass the selected event's ID to the AttendeeList activity
+                Intent intent = new Intent(ViewEventActivity.this, AttendeeList.class);
+                intent.putExtra("eventId", eventFromDb.getEventId());  // Pass the event ID to the new activity
+                startActivity(intent);
+            } else {
+                Toast.makeText(ViewEventActivity.this, "Error: Event not found in the database", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set long click listeners for showing options (Details, Delete, or Go Back) for both upcoming and past events
         upcoming.setOnItemLongClickListener((adapterView, view, position, id) -> {
             Event event = upcomingEvents.get(position);
             showOptionsDialog(event);
@@ -116,7 +148,6 @@ public class ViewEventActivity extends AppCompatActivity {
                 "End Time: " + event.getEndTime() + "\n" +
                 "Description: " + event.getEventDescription() + "\n" +
                 "Location: " + event.getEventLocation() + "\n" +
-                //"Organizer: " + event.getEventOrganizer() + "\n" + //fix later now give addresse
                 "Requires Approval: " + (event.isRequiresApproval() ? "Yes" : "No") + "\n" +
                 "Attendees: " + (event.getAttendees().isEmpty() ? "No attendees yet" : String.join(", ", event.getAttendees()));
 
@@ -124,7 +155,6 @@ public class ViewEventActivity extends AppCompatActivity {
         detailsDialogBuilder.setPositiveButton("OK", (dialog, id) -> dialog.dismiss());
         detailsDialogBuilder.create().show();
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void deleteEvent(Event event) {
