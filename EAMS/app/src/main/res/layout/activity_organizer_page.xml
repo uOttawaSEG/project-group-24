@@ -56,16 +56,7 @@
       app:layout_constraintStart_toStartOf="parent"
       android:layout_marginTop="20dp" />
 
-  <!-- View Attendee Requests Button -->
-  <Button
-      android:id="@+id/viewAttendeeButton"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="View Attendee Requests"
-      app:layout_constraintTop_toBottomOf="@id/viewButton"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      android:layout_marginTop="20dp" />
+
 
   <!-- Logout Button -->
   <Button
@@ -73,7 +64,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="Logout"
-      app:layout_constraintTop_toBottomOf="@id/viewAttendeeButton"
+      app:layout_constraintTop_toBottomOf="@id/viewButton"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       android:layout_marginTop="20dp"
