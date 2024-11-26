@@ -209,6 +209,37 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         return attendees;
     }
 
+    // Method to get all events an attendee is registered for
+    public List<String> getRegisteredEventsByAttendeeEmail(String attendeeEmail) {
+        List<String> registeredEvents = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to join Events and event_attendees tables
+        String selectQuery = "SELECT e." + KEY_EVENT_NAME + " FROM " + TABLE_EVENTS + " e " +
+                "INNER JOIN " + TABLE_EVENT_ATTENDEES + " ea ON e." + KEY_EVENT_ID + " = ea." + KEY_EVENT_ID +
+                " WHERE ea." + KEY_ATTENDEE_EMAIL + " = ?";
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery(selectQuery, new String[]{attendeeEmail});
+            if (cursor.moveToFirst()) {
+                do {
+                    // Add the event name to the list
+                    registeredEvents.add(cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_NAME)));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelperForEvent", "Error fetching registered events: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return registeredEvents;
+    }
+
+
     // Helper method to get the current date in "YYYY-MM-DD" format
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
