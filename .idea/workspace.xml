@@ -15,6 +15,11 @@
           <theme>@style/Theme.EAMS</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_event_list.xml">
+        <config>
+          <theme>@style/Theme.EAMS</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_inbox.xml">
         <config>
           <theme>@style/Theme.EAMS</theme>
@@ -26,11 +31,6 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_organizer_page.xml">
-        <config>
-          <theme>@style/Theme.EAMS</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_registered_events_list.xml">
         <config>
           <theme>@style/Theme.EAMS</theme>
         </config>
@@ -68,6 +68,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8bb76b44-547e-4c65-adc4-88f764018981" name="Changes" comment="Merge remote-tracking branch 'origin/main'">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/AttendeePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/AttendeePage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/DatabaseHelperForEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams/DatabaseHelperForEvent.java" afterDir="false" />
     </list>
@@ -104,11 +105,6 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="EAMS" type="f1a62948:ProjectNode" />
               </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="EAMS" type="f1a62948:ProjectNode" />
-                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
-              </path>
             </expand>
             <select />
           </tree_state>
@@ -119,8 +115,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -185,7 +181,7 @@
     <setting file="file://$PROJECT_DIR$/EAMS/app/src/main/res/layout/activity_inbox.xml" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
@@ -237,6 +233,9 @@
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.example.eams" />
     </key>
+    <key name="android.template.1445191869">
+      <recent name="com.example.eams" />
+    </key>
     <key name="android.template.-2078499797">
       <recent name="com.example.eams" />
     </key>
@@ -244,6 +243,9 @@
       <recent name="$PROJECT_DIR$/EAMS/app/src/main/java/com/example/eams" />
     </key>
     <key name="android.template.1231190985">
+      <recent name="com.example.eams" />
+    </key>
+    <key name="android.template.-2097245332">
       <recent name="com.example.eams" />
     </key>
     <key name="android.template.-1824831751">
@@ -591,7 +593,31 @@
       <option name="project" value="LOCAL" />
       <updated>1730144224687</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Merge remote-tracking branch 'origin/main'">
+      <option name="closed" value="true" />
+      <created>1732593870193</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1732593870193</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Merge remote-tracking branch 'origin/main'">
+      <option name="closed" value="true" />
+      <created>1732593938808</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1732593938808</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Merge remote-tracking branch 'origin/main'">
+      <option name="closed" value="true" />
+      <created>1732594686245</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1732594686245</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

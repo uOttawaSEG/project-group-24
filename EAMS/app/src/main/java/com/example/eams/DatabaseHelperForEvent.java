@@ -210,7 +210,7 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
     }
 
     // Method to get all events an attendee is registered for
-    public List<String> getRegisteredEventsByAttendeeEmail(String attendeeEmail) {
+    public List<String> getEventByAttendeeEmail(String attendeeEmail) {
         List<String> registeredEvents = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -253,5 +253,14 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         db.close();
         return rowsAffected > 0;
     }
+
+    public boolean cancelRegistration(int eventId, String attendeeEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLE_EVENT_ATTENDEES,
+                KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?",
+                new String[]{String.valueOf(eventId), attendeeEmail});
+        return rowsAffected > 0; // Return true if any rows were deleted
+    }
+
 
 }
