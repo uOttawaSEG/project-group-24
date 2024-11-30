@@ -11,7 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.time.LocalDate;
+
 
 public class SignUpEventActivity extends AppCompatActivity {
     private Button backButton;
@@ -51,8 +55,26 @@ public class SignUpEventActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadEvents() {
-        // Get all events from database
+        // Get all events from the database
         availableEvents = dbHelper.getAllEvents();
+
+        // Get today's date
+        LocalDate today = LocalDate.now();
+
+        // Filter out past events
+        availableEvents.removeIf(event -> {
+            // Convert eventDate string to LocalDate (assuming the format is "yyyy-MM-dd")
+            LocalDate eventDate = LocalDate.parse(event.getEventDate(), DateTimeFormatter.ISO_DATE);
+            // Check if the event is in the past
+            return eventDate.isBefore(today);
+        });
+
+        // Sort the events by date in descending order (newest first)
+        availableEvents.sort((event1, event2) -> {
+            LocalDate eventDate1 = LocalDate.parse(event1.getEventDate(), DateTimeFormatter.ISO_DATE);
+            LocalDate eventDate2 = LocalDate.parse(event2.getEventDate(), DateTimeFormatter.ISO_DATE);
+            return eventDate2.compareTo(eventDate1); // Descending order
+        });
 
         // Create adapter for the ListView
         ArrayAdapter<Event> adapter = new ArrayAdapter<>(this,
@@ -65,6 +87,7 @@ public class SignUpEventActivity extends AppCompatActivity {
             showSignUpDialog(selectedEvent);
         });
     }
+
 
     private void showSignUpDialog(Event event) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
