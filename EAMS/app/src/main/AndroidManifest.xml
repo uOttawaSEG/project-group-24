@@ -14,51 +14,51 @@
         tools:targetApi="31">
         <activity
             android:name=".Search"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".EventList"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".EventsList"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".SignUpEventActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".AttendeeList"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ViewEventActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".OrganizerPage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".OganizerPage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".AttendeePage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".PendingActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".RejectedActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".User_status_dialog"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_user_status_dialog"
             android:theme="@style/Theme.EAMS" />
         <activity
             android:name=".AdminHome"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ActivityWelcome"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Registerpage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -72,7 +72,7 @@
         <activity android:name=".RejectedRequests" />
         <activity
             android:name=".CreateEventActivity"
-            android:exported="false" />
+            android:exported="true" />
     </application>
 
 </manifest>
