@@ -319,6 +319,16 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
 
         return status; // Return the status (or null if not found)
     }
+    // Remove an attendee from an event
+    public boolean removeEventAttendee(int eventId, String attendeeEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLE_EVENT_ATTENDEES,
+                KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?",
+                new String[]{String.valueOf(eventId), attendeeEmail});
+        db.close();
+        return rowsAffected > 0;  // Return true if deletion was successful
+    }
+
 
 
 

@@ -64,30 +64,64 @@ public class AttendeeEvents extends AppCompatActivity {
             Toast.makeText(this, "You have not signed up for any events", Toast.LENGTH_SHORT).show();
         } else {
             // Sort the events by date, with the newest event first
-            Collections.sort(signedUpEvents, new Comparator<Event>() {
-                @Override
-                public int compare(Event e1, Event e2) {
-                    // Parse the event date and compare
-                    String eventDate1 = e1.getEventDate() + " " + e1.getStartTime();
-                    String eventDate2 = e2.getEventDate() + " " + e2.getStartTime();
-
-                    // Compare in reverse order to show newest events first
-                    return eventDate2.compareTo(eventDate1);
-                }
+            Collections.sort(signedUpEvents, (e1, e2) -> {
+                String eventDate1 = e1.getEventDate() + " " + e1.getStartTime();
+                String eventDate2 = e2.getEventDate() + " " + e2.getStartTime();
+                return eventDate2.compareTo(eventDate1); // Compare in reverse order
             });
 
             // Use the custom EventAdapter to display the events with status
             EventAdapter adapter = new EventAdapter(this, signedUpEvents, dbHelper, attendeeEmail);
             attendeeEventsListView.setAdapter(adapter);
 
-            // Set up long click listener to show event details
+            // Set up long click listener for options
             attendeeEventsListView.setOnItemLongClickListener((adapterView, view, position, id) -> {
                 Event event = signedUpEvents.get(position);  // Get the event at the clicked position
-                showEventDetails(event);  // Show the event details
-                return true;  // Return true to indicate the event is handled
+                showOptionsDialog(event, signedUpEvents);    // Show options dialog
+                return true;  // Indicate the event is handled
             });
         }
     }
+
+    private void showOptionsDialog(Event event, List<Event> signedUpEvents) {
+        // Create an AlertDialog with three options
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose an action");
+
+        String[] options = {"Go Back", "See Details", "Delete Event"};
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0: // Go Back
+                    dialog.dismiss();
+                    break;
+
+                case 1: // See Details
+                    showEventDetails(event);
+                    break;
+
+                case 2: // Delete Event
+                    deleteEventFromList(event, signedUpEvents);
+                    break;
+            }
+        });
+
+        builder.create().show();
+    }
+
+    private void deleteEventFromList(Event event, List<Event> signedUpEvents) {
+        boolean isDeleted = dbHelper.removeEventAttendee(event.getEventId(), attendeeEmail);
+
+        if (isDeleted) {
+            // Remove the event from the list and update the adapter
+            signedUpEvents.remove(event);
+            ((ArrayAdapter) attendeeEventsListView.getAdapter()).notifyDataSetChanged();
+
+            Toast.makeText(this, "Event removed successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Failed to remove event", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
     private void showEventDetails(Event event) {
