@@ -76,9 +76,8 @@ public class AttendeeEvents extends AppCompatActivity {
                 }
             });
 
-            // Set up an adapter to display the events
-            ArrayAdapter<Event> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, signedUpEvents);
+            // Use the custom EventAdapter to display the events with status
+            EventAdapter adapter = new EventAdapter(this, signedUpEvents, dbHelper, attendeeEmail);
             attendeeEventsListView.setAdapter(adapter);
 
             // Set up long click listener to show event details
@@ -89,6 +88,7 @@ public class AttendeeEvents extends AppCompatActivity {
             });
         }
     }
+
 
     private void showEventDetails(Event event) {
         // Create the message with the event details
@@ -120,4 +120,6 @@ public class AttendeeEvents extends AppCompatActivity {
         intent.putExtra("userName", attendeeEmail);
         startActivity(intent);
     }
+
+
 }
