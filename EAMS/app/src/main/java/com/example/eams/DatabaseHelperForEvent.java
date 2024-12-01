@@ -253,6 +253,78 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         db.close();
         return rowsAffected > 0;
     }
+    public List<Event> getEventsForAttendee(String attendeeEmail) {
+        List<Event> events = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            // First, get the event_ids that the attendee is associated with
+            String selectEventIdsQuery = "SELECT " + KEY_EVENT_ID + " FROM " + TABLE_EVENT_ATTENDEES +
+                    " WHERE " + KEY_ATTENDEE_EMAIL + " = ?";
+
+            cursor = db.rawQuery(selectEventIdsQuery, new String[]{attendeeEmail});
+
+            List<Integer> eventIds = new ArrayList<>();
+            if (cursor.moveToFirst()) {
+                do {
+                    eventIds.add(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_ID)));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+
+            // If no events found for this attendee, return an empty list
+            if (eventIds.isEmpty()) {
+                return events;
+            }
+
+            // Dynamically build the query based on the eventIds size
+            StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_EVENTS + " WHERE " + KEY_EVENT_ID + " IN (");
+            for (int i = 0; i < eventIds.size(); i++) {
+                query.append("?");
+                if (i < eventIds.size() - 1) {
+                    query.append(", ");
+                }
+            }
+            query.append(")");
+
+            // Convert eventIds list to a String array for the rawQuery
+            String[] idArray = new String[eventIds.size()];
+            for (int i = 0; i < eventIds.size(); i++) {
+                idArray[i] = String.valueOf(eventIds.get(i));
+            }
+
+            // Now, execute the query to fetch the event details
+            cursor = db.rawQuery(query.toString(), idArray);
+
+            // Iterate through the cursor to construct the Event objects
+            if (cursor.moveToFirst()) {
+                do {
+                    Event event = new Event(
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_ID)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_NAME)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DESCRIPTION)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DATE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-")[0],  // Assuming time is stored as "start-end"
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-").length > 1 ? cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-")[1] : "",
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_LOCATION)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_REQUIRES_APPROVAL)) > 0,  // Convert int to boolean
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_ORGANIZER))
+                    );
+                    events.add(event);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return events;
+    }
+
+
+
 
     public boolean cancelRegistration(int eventId, String attendeeEmail) {
         SQLiteDatabase db = this.getWritableDatabase();

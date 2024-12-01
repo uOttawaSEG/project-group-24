@@ -82,12 +82,12 @@ public class SignUpEventActivity extends AppCompatActivity {
         // Get today's date
         LocalDate today = LocalDate.now();
 
-        // Filter out past events
+        // Filter out past events and events the user has already signed up for
         availableEvents.removeIf(event -> {
             // Convert eventDate string to LocalDate (assuming the format is "yyyy-MM-dd")
             LocalDate eventDate = LocalDate.parse(event.getEventDate(), DateTimeFormatter.ISO_DATE);
-            // Check if the event is in the past
-            return eventDate.isBefore(today);
+            // Check if the event is in the past or the user is already signed up
+            return eventDate.isBefore(today) || dbHelper.isAttendeeRegistered(event.getEventId(), attendeeEmail);
         });
 
         // Sort the events by date in descending order (newest first)
@@ -97,7 +97,10 @@ public class SignUpEventActivity extends AppCompatActivity {
             return eventDate2.compareTo(eventDate1); // Descending order
         });
 
-        // Initially populate filteredEvents with all events
+        // Clear the filtered list before repopulating
+        filteredEvents.clear();
+
+        // Add all remaining available events to filteredEvents
         filteredEvents.addAll(availableEvents);
 
         // Create adapter for the ListView using filteredEvents
@@ -105,12 +108,16 @@ public class SignUpEventActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, filteredEvents);
         eventsListView.setAdapter(adapter);
 
+        // Notify the adapter about data change
+        adapter.notifyDataSetChanged();
+
         // Set click listener for event selection
         eventsListView.setOnItemClickListener((parent, view, position, id) -> {
             Event selectedEvent = filteredEvents.get(position);
             showSignUpDialog(selectedEvent);
         });
     }
+
 
     private void filterEvents(String keyword) {
         filteredEvents.clear();
@@ -126,10 +133,11 @@ public class SignUpEventActivity extends AppCompatActivity {
             }
         }
 
-        // Notify the adapter about data change
+        // Notify the adapter about data chang
         ((ArrayAdapter) eventsListView.getAdapter()).notifyDataSetChanged();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void showSignUpDialog(Event event) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Sign Up for Event")
@@ -142,6 +150,7 @@ public class SignUpEventActivity extends AppCompatActivity {
                 .show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void signUpForEvent(Event event) {
         // First check if already registered
         if (dbHelper.isAttendeeRegistered(event.getEventId(), attendeeEmail)) {
@@ -167,5 +176,6 @@ public class SignUpEventActivity extends AppCompatActivity {
                 Toast.makeText(this, "Failed to sign up for event", Toast.LENGTH_SHORT).show();
             }
         }
+        loadEvents();
     }
 }

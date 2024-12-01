@@ -45,14 +45,16 @@ public class AttendeePage extends AppCompatActivity {
     private void setClickListeners() {
         // Set up the logout button click listener
         logout.setOnClickListener(v -> logoutUser());
+        myEvents.setOnClickListener(v -> openMyEventsPage());
         signUp.setOnClickListener(v -> openSignUpPage());
     }
 
-    /*private void openMyEventsPage() {
-        Intent intent = new Intent(AttendeePage.this, EventList.class);
-        intent.putExtra(getIntent().getStringExtra("attendeeEmail"),getIntent().getStringExtra("Status"));
+    private void openMyEventsPage() {
+        Intent intent = new Intent(AttendeePage.this, AttendeeEvents.class);
+        intent.putExtra("attendeeEmail", getIntent().getStringExtra("userName"));
         startActivity(intent);
-    }*/
+    }
+
 
     private void openSignUpPage() {
         Intent intent = new Intent(AttendeePage.this, SignUpEventActivity.class);
