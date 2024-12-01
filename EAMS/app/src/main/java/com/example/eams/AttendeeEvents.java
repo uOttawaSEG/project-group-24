@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class AttendeeEvents extends AppCompatActivity {
@@ -61,6 +63,19 @@ public class AttendeeEvents extends AppCompatActivity {
         if (signedUpEvents.isEmpty()) {
             Toast.makeText(this, "You have not signed up for any events", Toast.LENGTH_SHORT).show();
         } else {
+            // Sort the events by date, with the newest event first
+            Collections.sort(signedUpEvents, new Comparator<Event>() {
+                @Override
+                public int compare(Event e1, Event e2) {
+                    // Parse the event date and compare
+                    String eventDate1 = e1.getEventDate() + " " + e1.getStartTime();
+                    String eventDate2 = e2.getEventDate() + " " + e2.getStartTime();
+
+                    // Compare in reverse order to show newest events first
+                    return eventDate2.compareTo(eventDate1);
+                }
+            });
+
             // Set up an adapter to display the events
             ArrayAdapter<Event> adapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1, signedUpEvents);
