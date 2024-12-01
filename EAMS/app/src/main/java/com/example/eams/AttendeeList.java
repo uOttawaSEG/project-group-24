@@ -1,113 +1,103 @@
 package com.example.eams;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.util.List;
 
 public class AttendeeList extends AppCompatActivity {
 
-    private ListView attendeesListView;
     private TextView eventNameTextView, eventIdTextView;
-    private DatabaseHelper dbHelper;           // Database helper for user data
-    private DatabaseHelperForEvent eventHelper; // Database helper for event data
-    private int eventId; // Event ID as int
+    private ListView attendeesListView;
+    private Button acceptButton, acceptAllButton;
+    private DatabaseHelperForEvent dbHelper;
+    private int eventId;
+    private String eventName;
+    private List<String> attendees;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // Enables edge-to-edge support for the app
         setContentView(R.layout.activity_attendee_list);
 
-        // Get the event ID passed from the previous activity
-        eventId = getIntent().getIntExtra("eventId", -1);  // Default to -1 if not found
+        // Initialize views
+        eventNameTextView = findViewById(R.id.eventNameTextView);
+        eventIdTextView = findViewById(R.id.eventIdTextView);
+        attendeesListView = findViewById(R.id.attendeesListView);
+        acceptButton = findViewById(R.id.acceptButton);
+        acceptAllButton = findViewById(R.id.acceptAllButton);
+
+        // Initialize database helper
+        dbHelper = new DatabaseHelperForEvent(this);
+
+        // Get event details passed from the previous activity
+        eventId = getIntent().getIntExtra("eventId", -1);
+        eventName = getIntent().getStringExtra("eventName");
+
         if (eventId == -1) {
-            Toast.makeText(this, "Error: Event ID not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: Event ID not found.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Initialize the database helpers
-        dbHelper = new DatabaseHelper(this);          // For user-related database operations
-        eventHelper = new DatabaseHelperForEvent(this); // For event-related database operations
+        // Set event details in the TextViews
+        eventNameTextView.setText("Event Name: " + eventName);
+        eventIdTextView.setText("Event ID: " + eventId);
 
-        attendeesListView = findViewById(R.id.attendeesListView);
-        eventNameTextView = findViewById(R.id.eventNameTextView);
-        eventIdTextView = findViewById(R.id.eventIdTextView);
-
-        // Adjust the view padding to avoid overlap with system bars
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
+        // Load attendees for the event
         loadAttendees();
+
+        // Set up button functionality
+        setButtonListeners();
     }
 
     private void loadAttendees() {
-        // Fetch the event details by event ID using eventHelper
-        Event event = eventHelper.getEventById(eventId);
-        if (event != null) {
-            // Set event name and ID in the TextViews
-            eventNameTextView.setText(event.getEventName());
-            eventIdTextView.setText("Event ID: " + eventId);  // Display the ID
+        // Fetch the attendees from the database
+        attendees = dbHelper.getAttendees(eventId);
 
-            // Check if the event requires approval
-            if (!event.isRequiresApproval()) {
-                // Show a Toast message if no approval is required
-                Toast.makeText(this, "Attendees will be automatically accepted.", Toast.LENGTH_SHORT).show();
-            }
-
-            List<String> attendees = event.getAttendees(); // Get the list of attendees
-            if (attendees.isEmpty()) {
-                attendees.add("No attendees yet");
-            }
-
-            // Set the attendees to the ListView
-            ArrayAdapter<String> attendeesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, attendees);
-            attendeesListView.setAdapter(attendeesAdapter);
-
-            // Set a long-click listener on the ListView to show user details
-            attendeesListView.setOnItemLongClickListener((adapterView, view, position, id) -> {
-                String selectedAttendeeEmail = attendees.get(position);
-                showUserDetails(selectedAttendeeEmail);  // Pass the selected email to show user details
-                return true; // Return true to indicate that the long-click is handled
-            });
-        } else {
-            Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
+        if (attendees.isEmpty()) {
+            Toast.makeText(this, "No attendees found for this event.", Toast.LENGTH_SHORT).show();
         }
+
+        // Set up the ListView with the fetched attendees
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, attendees);
+        attendeesListView.setAdapter(adapter);
     }
 
-    private void showUserDetails(String email) {
-        // Fetch the user details using email from the DatabaseHelper
-        UserRegistration user = dbHelper.getUserByEmail(email);
+    private void setButtonListeners() {
+        // Accept a selected attendee
+        acceptButton.setOnClickListener(v -> {
+            int position = attendeesListView.getCheckedItemPosition();
+            if (position != ListView.INVALID_POSITION) {
+                String selectedAttendee = attendees.get(position);
+                boolean updated = dbHelper.updateAttendeeStatus(eventId, selectedAttendee, "approved");
+                if (updated) {
+                    Toast.makeText(this, "Attendee " + selectedAttendee + " accepted.", Toast.LENGTH_SHORT).show();
+                    loadAttendees(); // Refresh the list
+                } else {
+                    Toast.makeText(this, "Failed to accept attendee.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Please select an attendee to accept.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        if (user != null) {
-            // Create and show a dialog with the user's details
-            String detailsMessage = "Name: " + user.getFirstName() + " " + user.getLastName() + "\n" +
-                    "Email: " + user.getEmail() + "\n" +
-                    "Phone: " + user.getPhoneNumber() + "\n" +
-                    "Address: " + user.getAddress() + "\n" +
-                    "Role: " + user.getRole();
-
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle("User Details")
-                    .setMessage(detailsMessage)
-                    .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
-                    .create()
-                    .show();
-        } else {
-            Toast.makeText(this, "User details not found", Toast.LENGTH_SHORT).show();
-        }
+        // Accept all attendees
+        acceptAllButton.setOnClickListener(v -> {
+            boolean updated = dbHelper.updateAllAttendeeStatus(eventId, "approved");
+            if (updated) {
+                Toast.makeText(this, "All attendees accepted.", Toast.LENGTH_SHORT).show();
+                loadAttendees(); // Refresh the list
+            } else {
+                Toast.makeText(this, "Failed to accept all attendees.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

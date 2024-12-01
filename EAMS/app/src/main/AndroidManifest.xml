@@ -21,7 +21,7 @@
         <activity
             android:name=".EventList"
             android:exported="true" />
-        <activitya
+        <activity
             android:name=".EventsList"
             android:exported="true" />
         <activity

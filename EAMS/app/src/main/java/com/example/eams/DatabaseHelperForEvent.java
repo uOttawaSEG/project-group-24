@@ -335,4 +335,53 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
     }
 
 
+    public boolean hasApprovedAttendees(int eventId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        boolean hasApproved = false;
+
+        try {
+            // Query to check for approved attendees
+            String query = "SELECT COUNT(*) FROM " + TABLE_EVENT_ATTENDEES +
+                    " WHERE " + KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_STATUS + " = ?";
+            cursor = db.rawQuery(query, new String[]{String.valueOf(eventId), "approved"});
+
+            if (cursor.moveToFirst()) {
+                hasApproved = cursor.getInt(0) > 0; // If count > 0, there are approved attendees
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelperForEvent", "Error checking approved attendees: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return hasApproved;
+    }
+
+    public boolean updateAttendeeStatus(int eventId, String attendeeEmail, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ATTENDEE_STATUS, status);
+
+        int rowsUpdated = db.update(TABLE_EVENT_ATTENDEES, values,
+                KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?",
+                new String[]{String.valueOf(eventId), attendeeEmail});
+        return rowsUpdated > 0;
+    }
+
+    public boolean updateAllAttendeeStatus(int eventId, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ATTENDEE_STATUS, status);
+
+        int rowsUpdated = db.update(TABLE_EVENT_ATTENDEES, values,
+                KEY_EVENT_ID + " = ?",
+                new String[]{String.valueOf(eventId)});
+        return rowsUpdated > 0;
+    }
+
+
 }
