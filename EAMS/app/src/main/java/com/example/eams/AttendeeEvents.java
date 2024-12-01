@@ -71,6 +71,8 @@ public class AttendeeEvents extends AppCompatActivity {
             EventAdapter adapter = new EventAdapter(this, signedUpEvents, dbHelper, attendeeEmail);
             attendeeEventsListView.setAdapter(adapter);
 
+            checkForUpcomingEvent(signedUpEvents);
+
             // Set up long click listener for options
             attendeeEventsListView.setOnItemLongClickListener((adapterView, view, position, id) -> {
                 Event event = signedUpEvents.get(position);  // Get the event at the clicked position
@@ -78,6 +80,58 @@ public class AttendeeEvents extends AppCompatActivity {
                 return true;  // Indicate the event is handled
             });
         }
+    }
+
+    private void checkForUpcomingEvent(List<Event> signedUpEvents) {
+        // Get the current date and time
+        long currentTimeMillis = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault());
+
+        // List to store events starting within 24 hours
+        StringBuilder upcomingEventsList = new StringBuilder();
+
+        // Loop through all events to check if any starts within 24 hours
+        for (Event event : signedUpEvents) {
+            try {
+                // Parse the event's date and time
+                String eventDateTimeStr = event.getEventDate() + " " + event.getStartTime();
+                long eventTimeMillis = sdf.parse(eventDateTimeStr).getTime();
+                long timeDifferenceMillis = eventTimeMillis - currentTimeMillis;
+
+                // Check if the event starts within 24 hours
+                if (timeDifferenceMillis <= 24 * 60 * 60 * 1000 && timeDifferenceMillis > 0) {
+                    // Add event to the list
+                    upcomingEventsList.append(event.getEventName())
+                            .append(" - ")
+                            .append(event.getEventDate())
+                            .append(" at ")
+                            .append(event.getStartTime())
+                            .append("\n");
+                }
+            } catch (Exception e) {
+                // Handle parsing errors
+                Toast.makeText(this, "Error parsing event date and time.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // If there are upcoming events, show the list in an AlertDialog
+        if (upcomingEventsList.length() > 0) {
+            showUpcomingEventsAlert(upcomingEventsList.toString());
+        }
+    }
+
+    private void showUpcomingEventsAlert(String upcomingEventsList) {
+        // Create an AlertDialog to list all events starting soon
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Upcoming Events Starting Soon!");
+        builder.setMessage(upcomingEventsList);
+
+        // Add a "Close" button to dismiss the dialog
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        builder.setCancelable(false); // Disable outside touch to dismiss the dialog
+
+        // Show the alert dialog
+        builder.create().show();
     }
 
     private void showOptionsDialog(Event event, List<Event> signedUpEvents) {
