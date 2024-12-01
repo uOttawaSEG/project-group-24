@@ -82,12 +82,35 @@ public class SignUpEventActivity extends AppCompatActivity {
         // Get today's date
         LocalDate today = LocalDate.now();
 
-        // Filter out past events and events the user has already signed up for
+        // Get the list of events the attendee is already signed up for
+        List<Event> signedUpEvents = dbHelper.getEventsForAttendee(attendeeEmail);
+
+        // Filter out events that are:
+        // - in the past
+        // - the user is already signed up for
+        // - conflicting with events the user is already signed up for
         availableEvents.removeIf(event -> {
             // Convert eventDate string to LocalDate (assuming the format is "yyyy-MM-dd")
             LocalDate eventDate = LocalDate.parse(event.getEventDate(), DateTimeFormatter.ISO_DATE);
-            // Check if the event is in the past or the user is already signed up
-            return eventDate.isBefore(today) || dbHelper.isAttendeeRegistered(event.getEventId(), attendeeEmail);
+
+            // Check for conflicts with signed-up events
+            boolean isConflicting = signedUpEvents.stream().anyMatch(signedUpEvent -> {
+                // Compare date
+                if (!signedUpEvent.getEventDate().equals(event.getEventDate())) {
+                    return false; // Different dates are not conflicts
+                }
+
+                // Compare time (assuming times are in "HH:mm" 24-hour format)
+                return timesOverlap(
+                        signedUpEvent.getStartTime(), signedUpEvent.getEndTime(),
+                        event.getStartTime(), event.getEndTime()
+                );
+            });
+
+            // Exclude past events, already signed-up events, and conflicting events
+            return eventDate.isBefore(today) ||
+                    dbHelper.isAttendeeRegistered(event.getEventId(), attendeeEmail) ||
+                    isConflicting;
         });
 
         // Sort the events by date in descending order (newest first)
@@ -117,6 +140,27 @@ public class SignUpEventActivity extends AppCompatActivity {
             showSignUpDialog(selectedEvent);
         });
     }
+
+    // Helper method to check if two time ranges overlap
+    private boolean timesOverlap(String start1, String end1, String start2, String end2) {
+        // Parse the times into minutes (assuming format is "HH:mm")
+        int start1Minutes = parseTimeToMinutes(start1);
+        int end1Minutes = parseTimeToMinutes(end1);
+        int start2Minutes = parseTimeToMinutes(start2);
+        int end2Minutes = parseTimeToMinutes(end2);
+
+        // Check for overlap
+        return (start1Minutes < end2Minutes && end1Minutes > start2Minutes);
+    }
+
+    // Helper method to parse time in "HH:mm" format into minutes
+    private int parseTimeToMinutes(String time) {
+        String[] parts = time.split(":");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        return hours * 60 + minutes;
+    }
+
 
 
     private void filterEvents(String keyword) {

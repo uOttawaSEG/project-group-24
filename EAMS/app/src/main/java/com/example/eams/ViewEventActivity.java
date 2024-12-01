@@ -61,6 +61,9 @@ public class ViewEventActivity extends AppCompatActivity {
             Event selectedEvent = upcomingEvents.get(0); // You can modify this logic as needed
             Intent intent = new Intent(ViewEventActivity.this, AttendeeList.class);
             intent.putExtra("eventId", selectedEvent.getEventId());  // Pass the event ID to the new activity
+            intent.putExtra("eventName", selectedEvent.getEventName());
+
+
             startActivity(intent);
         } else {
             Toast.makeText(this, "No upcoming events available", Toast.LENGTH_SHORT).show();
