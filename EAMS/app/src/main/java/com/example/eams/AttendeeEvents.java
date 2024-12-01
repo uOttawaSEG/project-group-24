@@ -3,9 +3,6 @@ package com.example.eams;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -14,8 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class AttendeeEvents extends AppCompatActivity {
@@ -30,7 +27,7 @@ public class AttendeeEvents extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee_events);
 
-        // Get attendee email from intent (pass this when navigating to this activity)
+        // Get attendee email from intent
         attendeeEmail = getIntent().getStringExtra("attendeeEmail");
         if (attendeeEmail == null) {
             Toast.makeText(this, "Error: Attendee email not found", Toast.LENGTH_SHORT).show();
@@ -52,7 +49,7 @@ public class AttendeeEvents extends AppCompatActivity {
     private void initializeViews() {
         // Set up the ListView and Back Button
         attendeeEventsListView = findViewById(R.id.attendeeEventsListView);
-        backButton = findViewById(R.id.backButton); // Initialize back button
+        backButton = findViewById(R.id.backButton);
     }
 
     private void loadAttendeeEvents() {
@@ -64,29 +61,81 @@ public class AttendeeEvents extends AppCompatActivity {
             Toast.makeText(this, "You have not signed up for any events", Toast.LENGTH_SHORT).show();
         } else {
             // Sort the events by date, with the newest event first
-            Collections.sort(signedUpEvents, new Comparator<Event>() {
-                @Override
-                public int compare(Event e1, Event e2) {
-                    // Parse the event date and compare
-                    String eventDate1 = e1.getEventDate() + " " + e1.getStartTime();
-                    String eventDate2 = e2.getEventDate() + " " + e2.getStartTime();
-
-                    // Compare in reverse order to show newest events first
-                    return eventDate2.compareTo(eventDate1);
-                }
+            Collections.sort(signedUpEvents, (e1, e2) -> {
+                String eventDate1 = e1.getEventDate() + " " + e1.getStartTime();
+                String eventDate2 = e2.getEventDate() + " " + e2.getStartTime();
+                return eventDate2.compareTo(eventDate1); // Compare in reverse order
             });
 
-            // Set up an adapter to display the events
-            ArrayAdapter<Event> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, signedUpEvents);
+            // Use the custom EventAdapter to display the events
+            EventAdapter adapter = new EventAdapter(this, signedUpEvents, dbHelper, attendeeEmail);
             attendeeEventsListView.setAdapter(adapter);
 
-            // Set up long click listener to show event details
+            // Set up long click listener for options
             attendeeEventsListView.setOnItemLongClickListener((adapterView, view, position, id) -> {
                 Event event = signedUpEvents.get(position);  // Get the event at the clicked position
-                showEventDetails(event);  // Show the event details
-                return true;  // Return true to indicate the event is handled
+                showOptionsDialog(event, signedUpEvents);    // Show options dialog
+                return true;  // Indicate the event is handled
             });
+        }
+    }
+
+    private void showOptionsDialog(Event event, List<Event> signedUpEvents) {
+        // Create an AlertDialog with three options
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose an action");
+
+        String[] options = {"Go Back", "See Details", "Delete Event"};
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0: // Go Back
+                    dialog.dismiss();
+                    break;
+
+                case 1: // See Details
+                    showEventDetails(event);
+                    break;
+
+                case 2: // Delete Event
+                    tryToRemoveEvent(event, signedUpEvents);
+                    break;
+            }
+        });
+
+        builder.create().show();
+    }
+
+    private void tryToRemoveEvent(Event event, List<Event> signedUpEvents) {
+        // Get the current date and time
+        long currentTimeMillis = System.currentTimeMillis();
+
+        // Parse the event's date and time
+        String eventDateTimeStr = event.getEventDate() + " " + event.getStartTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault());
+
+        try {
+            // Convert event date and time to milliseconds
+            long eventTimeMillis = sdf.parse(eventDateTimeStr).getTime();
+            long timeDifferenceMillis = eventTimeMillis - currentTimeMillis;
+
+            // Check if the event is more than 24 hours away
+            if (timeDifferenceMillis > 24 * 60 * 60 * 1000) { // 24 hours in milliseconds
+                // Remove the event for the attendee
+                boolean isDeleted = dbHelper.removeEventAttendee(event.getEventId(), attendeeEmail);
+                if (isDeleted) {
+                    signedUpEvents.remove(event); // Remove the event from the list
+                    ((ArrayAdapter) attendeeEventsListView.getAdapter()).notifyDataSetChanged(); // Refresh the ListView
+                    Toast.makeText(this, "Event removed successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Failed to remove event", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                // Show error message if the event is within 24 hours
+                Toast.makeText(this, "Cannot remove an event within 24 hours of its start time.", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            // Handle parsing errors
+            Toast.makeText(this, "Error parsing event date and time.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -103,12 +152,7 @@ public class AttendeeEvents extends AppCompatActivity {
         builder.setMessage(eventDetails);
 
         // Add a "Close" button to dismiss the dialog
-        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();  // Close the dialog
-            }
-        });
+        builder.setPositiveButton("Close", (dialog, which) -> dialog.dismiss());
 
         // Create and show the dialog
         builder.create().show();

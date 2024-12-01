@@ -323,6 +323,45 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         return events;
     }
 
+    // Method to get the status of an attendee for a specific event
+    public String getAttendeeStatusForEvent(int eventId, String attendeeEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String status = null; // Default value if no status is found
+        Cursor cursor = null;
+
+        try {
+            // Query to fetch the status from event_attendees table
+            String query = "SELECT " + KEY_ATTENDEE_STATUS + " FROM " + TABLE_EVENT_ATTENDEES +
+                    " WHERE " + KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{String.valueOf(eventId), attendeeEmail});
+
+            // If a result is found, retrieve the status
+            if (cursor.moveToFirst()) {
+                status = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ATTENDEE_STATUS));
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelperForEvent", "Error fetching attendee status: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close(); // Close the cursor to free resources
+            }
+            db.close(); // Close the database
+        }
+
+        return status; // Return the status (or null if not found)
+    }
+    // Remove an attendee from an event
+    public boolean removeEventAttendee(int eventId, String attendeeEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLE_EVENT_ATTENDEES,
+                KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?",
+                new String[]{String.valueOf(eventId), attendeeEmail});
+        db.close();
+        return rowsAffected > 0;  // Return true if deletion was successful
+    }
+
+
+
 
 
 
