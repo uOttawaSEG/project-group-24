@@ -10,7 +10,9 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseHelperForEvent extends SQLiteOpenHelper {
 
@@ -253,6 +255,141 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
         db.close();
         return rowsAffected > 0;
     }
+    public List<Event> getEventsForAttendee(String attendeeEmail) {
+        List<Event> events = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            // First, get the event_ids that the attendee is associated with
+            String selectEventIdsQuery = "SELECT " + KEY_EVENT_ID + " FROM " + TABLE_EVENT_ATTENDEES +
+                    " WHERE " + KEY_ATTENDEE_EMAIL + " = ?";
+
+            cursor = db.rawQuery(selectEventIdsQuery, new String[]{attendeeEmail});
+
+            List<Integer> eventIds = new ArrayList<>();
+            if (cursor.moveToFirst()) {
+                do {
+                    eventIds.add(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_ID)));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+
+            // If no events found for this attendee, return an empty list
+            if (eventIds.isEmpty()) {
+                return events;
+            }
+
+            // Dynamically build the query based on the eventIds size
+            StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_EVENTS + " WHERE " + KEY_EVENT_ID + " IN (");
+            for (int i = 0; i < eventIds.size(); i++) {
+                query.append("?");
+                if (i < eventIds.size() - 1) {
+                    query.append(", ");
+                }
+            }
+            query.append(")");
+
+            // Convert eventIds list to a String array for the rawQuery
+            String[] idArray = new String[eventIds.size()];
+            for (int i = 0; i < eventIds.size(); i++) {
+                idArray[i] = String.valueOf(eventIds.get(i));
+            }
+
+            // Now, execute the query to fetch the event details
+            cursor = db.rawQuery(query.toString(), idArray);
+
+            // Iterate through the cursor to construct the Event objects
+            if (cursor.moveToFirst()) {
+                do {
+                    Event event = new Event(
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_ID)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_NAME)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DESCRIPTION)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_DATE)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-")[0],  // Assuming time is stored as "start-end"
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-").length > 1 ? cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_TIME)).split("-")[1] : "",
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_LOCATION)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow(KEY_EVENT_REQUIRES_APPROVAL)) > 0,  // Convert int to boolean
+                            cursor.getString(cursor.getColumnIndexOrThrow(KEY_EVENT_ORGANIZER))
+                    );
+                    events.add(event);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return events;
+    }
+
+    // Method to get the status of an attendee for a specific event
+    public String getAttendeeStatusForEvent(int eventId, String attendeeEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String status = null; // Default value if no status is found
+        Cursor cursor = null;
+
+        try {
+            // Query to fetch the status from event_attendees table
+            String query = "SELECT " + KEY_ATTENDEE_STATUS + " FROM " + TABLE_EVENT_ATTENDEES +
+                    " WHERE " + KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{String.valueOf(eventId), attendeeEmail});
+
+            // If a result is found, retrieve the status
+            if (cursor.moveToFirst()) {
+                status = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ATTENDEE_STATUS));
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelperForEvent", "Error fetching attendee status: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close(); // Close the cursor to free resources
+            }
+            db.close(); // Close the database
+        }
+
+        return status; // Return the status (or null if not found)
+    }
+
+
+    public List<Map<String, String>> getAttendeesWithStatus(int eventId) {
+        List<Map<String, String>> attendees = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + KEY_ATTENDEE_EMAIL + ", " + KEY_ATTENDEE_STATUS +
+                " FROM " + TABLE_EVENT_ATTENDEES + " WHERE " + KEY_EVENT_ID + " = ?", new String[]{String.valueOf(eventId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Map<String, String> attendee = new HashMap<>();
+                String email = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ATTENDEE_EMAIL));
+                String status = cursor.getString(cursor.getColumnIndexOrThrow(KEY_ATTENDEE_STATUS));
+                attendee.put("email", email);
+                attendee.put("status", status);
+                attendees.add(attendee);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return attendees;
+    }
+
+
+    // Remove an attendee from an event
+    public boolean removeEventAttendee(int eventId, String attendeeEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLE_EVENT_ATTENDEES,
+                KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?",
+                new String[]{String.valueOf(eventId), attendeeEmail});
+        db.close();
+        return rowsAffected > 0;  // Return true if deletion was successful
+    }
+
+
+
+
+
 
     public boolean cancelRegistration(int eventId, String attendeeEmail) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -260,6 +397,83 @@ public class DatabaseHelperForEvent extends SQLiteOpenHelper {
                 KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?",
                 new String[]{String.valueOf(eventId), attendeeEmail});
         return rowsAffected > 0; // Return true if any rows were deleted
+    }
+
+
+    public boolean hasApprovedAttendees(int eventId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        boolean hasApproved = false;
+
+        try {
+            // Query to check for approved attendees
+            String query = "SELECT COUNT(*) FROM " + TABLE_EVENT_ATTENDEES +
+                    " WHERE " + KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_STATUS + " = ?";
+            cursor = db.rawQuery(query, new String[]{String.valueOf(eventId), "approved"});
+
+            if (cursor.moveToFirst()) {
+                hasApproved = cursor.getInt(0) > 0; // If count > 0, there are approved attendees
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelperForEvent", "Error checking approved attendees: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return hasApproved;
+    }
+
+    public boolean updateAttendeeStatus(int eventId, String attendeeEmail, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ATTENDEE_STATUS, status);
+
+        int rowsUpdated = db.update(TABLE_EVENT_ATTENDEES, values,
+                KEY_EVENT_ID + " = ? AND " + KEY_ATTENDEE_EMAIL + " = ?",
+                new String[]{String.valueOf(eventId), attendeeEmail});
+        return rowsUpdated > 0;
+    }
+
+    public boolean updateAllAttendeeStatus(int eventId, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ATTENDEE_STATUS, status);
+
+        int rowsUpdated = db.update(TABLE_EVENT_ATTENDEES, values,
+                KEY_EVENT_ID + " = ?",
+                new String[]{String.valueOf(eventId)});
+        return rowsUpdated > 0;
+    }
+
+    public String getAttendeeStatus(int eventId, String email) {
+        String status = null; // Initialize with null, in case status is not found
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT status FROM attendees WHERE eventId = ? AND email = ?";
+        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(eventId), email});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            // Ensure the column index is valid before using it
+            int statusColumnIndex = cursor.getColumnIndex("status");
+
+            if (statusColumnIndex >= 0) {
+                status = cursor.getString(statusColumnIndex); // Retrieve the status
+            } else {
+                Log.e("DatabaseError", "Status column not found in the attendees table.");
+            }
+        } else {
+            Log.e("DatabaseError", "No attendee found with email: " + email);
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        db.close();
+        return status;
     }
 
 

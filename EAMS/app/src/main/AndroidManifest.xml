@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <application
         android:allowBackup="true"
@@ -11,57 +11,60 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EAMS"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".AttendeeEvents"
+            android:exported="false" />
         <activity
             android:name=".Search"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".EventList"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".EventsList"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".SignUpEventActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".AttendeeList"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ViewEventActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".OrganizerPage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".OganizerPage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".AttendeePage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".PendingActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".RejectedActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".User_status_dialog"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_user_status_dialog"
             android:theme="@style/Theme.EAMS" />
         <activity
             android:name=".AdminHome"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ActivityWelcome"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Registerpage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -72,7 +75,7 @@
         <activity android:name=".RejectedRequests" />
         <activity
             android:name=".CreateEventActivity"
-            android:exported="false" />
+            android:exported="true" />
     </application>
 
 </manifest>

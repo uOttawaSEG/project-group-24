@@ -61,6 +61,9 @@ public class ViewEventActivity extends AppCompatActivity {
             Event selectedEvent = upcomingEvents.get(0); // You can modify this logic as needed
             Intent intent = new Intent(ViewEventActivity.this, AttendeeList.class);
             intent.putExtra("eventId", selectedEvent.getEventId());  // Pass the event ID to the new activity
+            intent.putExtra("eventName", selectedEvent.getEventName());
+
+
             startActivity(intent);
         } else {
             Toast.makeText(this, "No upcoming events available", Toast.LENGTH_SHORT).show();
@@ -158,12 +161,19 @@ public class ViewEventActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void deleteEvent(Event event) {
-        boolean isDeleted = dbHelper.deleteEvent(event.getEventId());
-        if (isDeleted) {
-            Toast.makeText(this, "Event deleted successfully!", Toast.LENGTH_SHORT).show();
-            loadEvents();  // Refresh the events list
+        boolean hasApprovedAttendees = dbHelper.hasApprovedAttendees(event.getEventId());
+
+        if (hasApprovedAttendees) {
+            Toast.makeText(this, "Event cannot be deleted. Approved attendees are associated with this event.", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, "Failed to delete event.", Toast.LENGTH_SHORT).show();
+            boolean isDeleted = dbHelper.deleteEvent(event.getEventId());
+            if (isDeleted) {
+                Toast.makeText(this, "Event deleted successfully!", Toast.LENGTH_SHORT).show();
+                loadEvents();
+            } else {
+                Toast.makeText(this, "Failed to delete event.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
 }

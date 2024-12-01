@@ -50,10 +50,11 @@ public class AttendeePage extends AppCompatActivity {
     }
 
     private void openMyEventsPage() {
-        Intent intent = new Intent(AttendeePage.this, EventList.class);
-        intent.putExtra(getIntent().getStringExtra("attendeeEmail"),getIntent().getStringExtra("Status"));
+        Intent intent = new Intent(AttendeePage.this, AttendeeEvents.class);
+        intent.putExtra("attendeeEmail", getIntent().getStringExtra("userName"));
         startActivity(intent);
     }
+
 
     private void openSignUpPage() {
         Intent intent = new Intent(AttendeePage.this, SignUpEventActivity.class);

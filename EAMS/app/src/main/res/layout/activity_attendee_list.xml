@@ -11,7 +11,7 @@
     android:id="@+id/main"
     tools:context=".AttendeeList">
 
-    <!-- TextView to display the event name at the top -->
+    <!-- Event Name TextView -->
     <TextView
         android:id="@+id/eventNameTextView"
         android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:textAlignment="center"/>
 
-    <!-- TextView to display the event ID just below the event name -->
+    <!-- Event ID TextView -->
     <TextView
         android:id="@+id/eventIdTextView"
         android:layout_width="wrap_content"
@@ -37,37 +37,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:textAlignment="center"/>
 
-    <!-- ListView to display the attendees -->
+    <!-- ListView for Attendees -->
     <ListView
         android:id="@+id/attendeesListView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/eventIdTextView"
-        app:layout_constraintBottom_toTopOf="@id/acceptAllButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@id/acceptAllButton" />
 
-    <!-- Button to accept a selected attendee -->
-    <Button
-        android:id="@+id/acceptButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Accept"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- Button to accept all attendees -->
+    <!-- Accept All Button -->
     <Button
         android:id="@+id/acceptAllButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Accept All"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/acceptButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="10dp"
+        android:onClick="onBackButtonPressed" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
