@@ -170,6 +170,7 @@ public class SignUpEventActivity extends AppCompatActivity {
         ((ArrayAdapter) eventsListView.getAdapter()).notifyDataSetChanged();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void showEventDetails(Event event) {
         String details = "Event Name: " + event.getEventName() + "\n" +
                 "Date: " + event.getEventDate() + "\n" +
@@ -196,6 +197,7 @@ public class SignUpEventActivity extends AppCompatActivity {
         builder.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void cancelRegistration(Event event) {
         boolean success = dbHelper.removeEventAttendee(event.getEventId(), attendeeEmail);
         if (success) {
