@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 
-
 public class SignUpEventActivity extends AppCompatActivity {
     private Button backButton;
     private ListView eventsListView;
@@ -107,10 +106,8 @@ public class SignUpEventActivity extends AppCompatActivity {
                 );
             });
 
-            // Exclude past events, already signed-up events, and conflicting events
-            return eventDate.isBefore(today) ||
-                    dbHelper.isAttendeeRegistered(event.getEventId(), attendeeEmail) ||
-                    isConflicting;
+            // Exclude past events and conflicting events
+            return eventDate.isBefore(today) || isConflicting;
         });
 
         // Sort the events by date in descending order (newest first)
@@ -137,23 +134,20 @@ public class SignUpEventActivity extends AppCompatActivity {
         // Set click listener for event selection
         eventsListView.setOnItemClickListener((parent, view, position, id) -> {
             Event selectedEvent = filteredEvents.get(position);
-            showSignUpDialog(selectedEvent);
+            showEventDetails(selectedEvent);
         });
     }
 
     // Helper method to check if two time ranges overlap
     private boolean timesOverlap(String start1, String end1, String start2, String end2) {
-        // Parse the times into minutes (assuming format is "HH:mm")
         int start1Minutes = parseTimeToMinutes(start1);
         int end1Minutes = parseTimeToMinutes(end1);
         int start2Minutes = parseTimeToMinutes(start2);
         int end2Minutes = parseTimeToMinutes(end2);
 
-        // Check for overlap
         return (start1Minutes < end2Minutes && end1Minutes > start2Minutes);
     }
 
-    // Helper method to parse time in "HH:mm" format into minutes
     private int parseTimeToMinutes(String time) {
         String[] parts = time.split(":");
         int hours = Integer.parseInt(parts[0]);
@@ -161,64 +155,72 @@ public class SignUpEventActivity extends AppCompatActivity {
         return hours * 60 + minutes;
     }
 
-
-
     private void filterEvents(String keyword) {
         filteredEvents.clear();
         if (keyword.isEmpty()) {
             filteredEvents.addAll(availableEvents); // Show all if no keyword
         } else {
             for (Event event : availableEvents) {
-                // Check if title or description contains the keyword (case insensitive)
                 if (event.getEventName().toLowerCase().contains(keyword.toLowerCase()) ||
                         event.getEventDescription().toLowerCase().contains(keyword.toLowerCase())) {
                     filteredEvents.add(event);
                 }
             }
         }
-
-        // Notify the adapter about data chang
         ((ArrayAdapter) eventsListView.getAdapter()).notifyDataSetChanged();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void showSignUpDialog(Event event) {
+    private void showEventDetails(Event event) {
+        String details = "Event Name: " + event.getEventName() + "\n" +
+                "Date: " + event.getEventDate() + "\n" +
+                "Start Time: " + event.getStartTime() + "\n" +
+                "End Time: " + event.getEndTime() + "\n" +
+                "Location: " + event.getEventLocation() + "\n" +
+                "Description: " + event.getEventDescription();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Sign Up for Event")
-                .setMessage("Would you like to sign up for " + event.getEventName() + "?")
-                .setPositiveButton("Sign Up", (dialog, id) -> {
-                    signUpForEvent(event);
-                })
-                .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss())
-                .create()
-                .show();
+        builder.setTitle("Event Details")
+                .setMessage(details);
+
+        if (dbHelper.isAttendeeRegistered(event.getEventId(), attendeeEmail)) {
+            builder.setPositiveButton("Cancel Registration", (dialog, which) -> {
+                cancelRegistration(event);
+            });
+        } else {
+            builder.setPositiveButton("Sign Up", (dialog, which) -> {
+                signUpForEvent(event);
+            });
+        }
+
+        builder.setNegativeButton("Close", null);
+        builder.show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void cancelRegistration(Event event) {
+        boolean success = dbHelper.removeEventAttendee(event.getEventId(), attendeeEmail);
+        if (success) {
+            Toast.makeText(this, "Successfully canceled registration", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Failed to cancel registration", Toast.LENGTH_SHORT).show();
+        }
+        loadEvents();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void signUpForEvent(Event event) {
-        // First check if already registered
         if (dbHelper.isAttendeeRegistered(event.getEventId(), attendeeEmail)) {
             Toast.makeText(this, "You are already registered for this event", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Check if the event requires approval
         if (event.isRequiresApproval()) {
-            // Add to pending approvals
             boolean success = dbHelper.addEventAttendee(event.getEventId(), attendeeEmail, "pending");
-            if (success) {
-                Toast.makeText(this, "Sign-up request sent for approval", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Failed to sign up for event", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(this, success ? "Sign-up request sent for approval" : "Failed to sign up for event", Toast.LENGTH_SHORT).show();
         } else {
-            // Direct sign-up
             boolean success = dbHelper.addEventAttendee(event.getEventId(), attendeeEmail, "approved");
-            if (success) {
-                Toast.makeText(this, "Successfully signed up for event", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Failed to sign up for event", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(this, success ? "Successfully signed up for event" : "Failed to sign up for event", Toast.LENGTH_SHORT).show();
         }
         loadEvents();
     }
